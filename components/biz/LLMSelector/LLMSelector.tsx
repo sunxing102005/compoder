@@ -29,6 +29,7 @@ const LLMSelector: React.FC<LLMSelectorProps> = ({
       deepseek: [],
       ollama: [],
       openrouter: [],
+      aliyun: [],
     }
 
     initialData.forEach(option => {

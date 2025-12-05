@@ -8,6 +8,7 @@ export type AIProvider =
   | "deepseek"
   | "ollama"
   | "openrouter"
+  | "aliyun"
 
 // Model configuration
 export type AIModelConfig = {
