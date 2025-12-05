@@ -1,6 +1,12 @@
 import { pipe } from "./utils/pipe"
 import { withErrorHandling } from "./utils/errorHandling"
 import {
+  routeUpdate,
+  extractFigmaData,
+  generateComponentDSL,
+  generateComponentFromDSLStep,
+  conditionalGenerateDSL,
+  conditionalGenerateFromDSL,
   designComponent,
   generateComponent,
   updateComponent,
@@ -14,8 +20,9 @@ export const updateComponentWorkflow = pipe<
   InitialWorkflowContext,
   WorkflowContext
 >(
-  withErrorHandling(designComponent),
-  withErrorHandling(generateComponent),
+  withErrorHandling(routeUpdate),
+  withErrorHandling(conditionalGenerateDSL),
+  withErrorHandling(conditionalGenerateFromDSL),
   withErrorHandling(updateComponent),
 )
 
@@ -23,8 +30,9 @@ export const initComponentWorkflow = pipe<
   InitialWorkflowContext,
   WorkflowContext
 >(
-  withErrorHandling(designComponent),
-  withErrorHandling(generateComponent),
+  withErrorHandling(extractFigmaData),
+  withErrorHandling(generateComponentDSL),
+  withErrorHandling(generateComponentFromDSLStep),
   withErrorHandling(initComponent),
 )
 

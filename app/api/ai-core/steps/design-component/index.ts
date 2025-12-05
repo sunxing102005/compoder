@@ -1,11 +1,11 @@
 import { generateComponentDesign } from "@/app/api/ai-core/steps/design-component/utils"
 import {
   DesignProcessingWorkflowContext,
-  InitialWorkflowContext,
+  FigmaDataWorkflowContext,
 } from "../../type"
 
 export const designComponent = async (
-  context: InitialWorkflowContext,
+  context: FigmaDataWorkflowContext,
 ): Promise<DesignProcessingWorkflowContext> => {
   context.stream.write("start design component \n")
 
@@ -16,6 +16,7 @@ export const designComponent = async (
   return {
     ...context,
     state: {
+      figmaData: context.state.figmaData,
       designTask: componentDesign,
     },
   }

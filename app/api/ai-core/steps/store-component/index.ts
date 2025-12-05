@@ -87,11 +87,26 @@ export const initComponent = async (
     throw new Error("Component already initialized")
   }
 
+  // 从组件树 DSL 或 designTask 中提取名称和描述
+  let componentName: string | undefined
+  let componentDescription: string | undefined
+
+  if (context.state.componentTreeDSL) {
+    // 从组件树 DSL 中提取信息
+    // TODO: 根据实际的 DSL 结构提取组件名称和描述
+    componentName = context.state.componentTreeDSL.name || context.state.componentTreeDSL.componentName
+    componentDescription = context.state.componentTreeDSL.description || context.state.componentTreeDSL.componentDescription
+  } else if (context.state.designTask) {
+    // 向后兼容：从 designTask 中获取
+    componentName = context.state.designTask.componentName
+    componentDescription = context.state.designTask.componentDescription
+  }
+
   await initComponentCode({
     id: context.query.component.id,
     code: context.state.generatedCode,
-    name: context.state.designTask.componentName,
-    description: context.state.designTask.componentDescription,
+    name: componentName,
+    description: componentDescription,
   })
 
   context.stream.close()

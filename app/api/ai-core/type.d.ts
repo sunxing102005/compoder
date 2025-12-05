@@ -1,6 +1,8 @@
 import { CodegenRule } from "@/lib/db/codegen/types"
 import { LanguageModel } from "ai"
 import { Prompt } from "@/lib/db/componentCode/types"
+import { FigmaSemanticNode } from "./steps/extract-figma-data/utils"
+import { ComponentTreeDSL } from "./steps/generate-component-dsl"
 
 // 基础的查询类型
 type WorkflowQuery = {
@@ -43,6 +45,31 @@ export type InitialWorkflowContext = {
   state?: never
 }
 
+// Figma 数据提取后的 Context
+export type FigmaDataWorkflowContext = {
+  stream: {
+    write: (chunk: string) => void
+    close: () => void
+  }
+  query: WorkflowQuery
+  state: {
+    figmaData: FigmaSemanticNode | null
+  }
+}
+
+// 组件树 DSL 处理中的 Context
+export type ComponentDSLWorkflowContext = {
+  stream: {
+    write: (chunk: string) => void
+    close: () => void
+  }
+  query: WorkflowQuery
+  state: {
+    figmaData: FigmaSemanticNode | null
+    componentTreeDSL: ComponentTreeDSL
+  }
+}
+
 // design 处理中的 Context
 export type DesignProcessingWorkflowContext = {
   stream: {
@@ -51,6 +78,7 @@ export type DesignProcessingWorkflowContext = {
   }
   query: WorkflowQuery
   state: {
+    figmaData?: FigmaSemanticNode | null
     designTask: {
       componentName: string
       componentDescription: string
@@ -72,7 +100,9 @@ export type GenerateProcessingWorkflowContext = {
   }
   query: WorkflowQuery
   state: {
-    designTask: {
+    figmaData?: FigmaSemanticNode | null
+    componentTreeDSL?: ComponentTreeDSL
+    designTask?: {
       componentName: string
       componentDescription: string
       library: Array<{
@@ -86,8 +116,16 @@ export type GenerateProcessingWorkflowContext = {
   }
 }
 
+// 路由更新的 Context（无 Figma 链接时）
+export type UpdateRouteWorkflowContext = InitialWorkflowContext & {
+  state: { hasFigmaLink: false }
+}
+
 // 统一的 Context 类型
 export type WorkflowContext =
   | InitialWorkflowContext
+  | UpdateRouteWorkflowContext
+  | FigmaDataWorkflowContext
+  | ComponentDSLWorkflowContext
   | DesignProcessingWorkflowContext
   | GenerateProcessingWorkflowContext

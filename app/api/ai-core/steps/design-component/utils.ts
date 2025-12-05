@@ -121,16 +121,27 @@ const buildCurrentComponentMessage = (
 // Build user message
 const buildUserMessage = (
   prompt: WorkflowContext["query"]["prompt"],
+  figmaData?: any,
 ): Array<CoreMessage> => {
+  const content = prompt.map(p => {
+    if (p.type === "image") {
+      return { type: "image" as const, image: p.image }
+    }
+    return { type: "text" as const, text: p.text }
+  })
+
+  // 如果有 Figma 数据，将其添加到用户消息中
+  if (figmaData) {
+    content.push({
+      type: "text" as const,
+      text: `\n\nFigma设计数据:\n${JSON.stringify(figmaData, null, 2)}`,
+    })
+  }
+
   return [
     {
       role: "user",
-      content: prompt.map(p => {
-        if (p.type === "image") {
-          return { type: "image" as const, image: p.image }
-        }
-        return { type: "text" as const, text: p.text }
-      }),
+      content,
     },
   ]
 }
@@ -187,12 +198,18 @@ export async function generateComponentDesign(
 
   const systemPrompt = buildSystemPrompt(req.query.rules)
 
+  // 获取 Figma 数据（如果存在）
+  const figmaData =
+    "state" in req && req.state && "figmaData" in req.state
+      ? req.state.figmaData
+      : null
+
   console.log("design-component systemPrompt:", systemPrompt)
   const messages = [
     ...buildCurrentComponentMessage(req.query.component),
-    ...buildUserMessage(req.query.prompt),
+    ...buildUserMessage(req.query.prompt, figmaData),
   ]
-
+//  console.log("design-component messages:", messages[0].content[0]);
   try {
     const stream = await streamText({
       system: systemPrompt,
@@ -229,6 +246,8 @@ export async function generateComponentDesign(
 
       // Parse the XML
       parserCompletion = transformComponentDesignFromXml(xmlMatch[0])
+    //   console.log("parserCompletion", parserCompletion)
+    //   console.log("xmlMatch", xmlMatch[0])
     } catch (parseError) {
       throw new Error(`Failed to parse AI response as valid XML: ${parseError}`)
     }
@@ -238,7 +257,7 @@ export async function generateComponentDesign(
       parserCompletion.retrievedAugmentationContent =
         getRetrievedAugmentationContent(docs, parserCompletion.library)
     }
-
+    console.log("parserCompletion", parserCompletion)
     return parserCompletion
   } catch (err: unknown) {
     console.log("err", err)

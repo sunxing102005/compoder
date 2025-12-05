@@ -37,6 +37,11 @@ export const getAIClient = (provider: AIProvider, model: string) => {
         apiKey: modelConfig.apiKey,
         extraBody: modelConfig.extraBody || {},
       }).chat(modelConfig.model)
+    case "aliyun":
+      return createOpenAI({
+        baseURL: modelConfig.baseURL,
+        apiKey: modelConfig.apiKey,
+      })(modelConfig.model)
     default:
       throw new Error(`Unsupported AI provider: ${provider}`)
   }
