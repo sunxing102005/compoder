@@ -7,7 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { CodeIDEProps, FileNode, StreamCodeIDEProps } from "./interface"
-import { Editor, Monaco } from "@monaco-editor/react"
+import { Editor, Monaco, loader } from "@monaco-editor/react"
 import { FileProvider, useFile } from "./context/FileContext"
 import { useEffect, useState, useRef, memo } from "react"
 import { useTheme } from "next-themes"
@@ -21,7 +21,11 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { StreamCodeHandler } from "./StreamCodeHandler"
 import { useEditorScroll } from "./hooks/useEditorScroll"
-
+loader.config({
+    paths: {
+      vs: '/monaco-editor/min/vs', // 对应上一步拷贝的位置
+    },
+  });
 // Helper function to get language from file extension
 function getLanguageFromFileName(fileName: string): string | undefined {
   const extension = fileName.split(".").pop()?.toLowerCase()
