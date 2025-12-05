@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { transform } from "@babel/standalone"
 import path from "path-browserify"
+import less from "less"
 import { ErrorDisplay } from "./ErrorDisplay"
 import { ErrorBoundary } from "./ErrorBoundary"
 import {
@@ -8,6 +9,84 @@ import {
   ModuleCache,
   ExportsObject,
 } from "./interface"
+
+const STYLE_EXTENSIONS = [".less", ".css"]
+
+const isStyleFile = (filename: string) =>
+  STYLE_EXTENSIONS.some(ext => filename.endsWith(ext))
+
+const styleElementCache: Record<string, HTMLStyleElement> = {}
+const compiledStyleCache: Record<string, string> = {}
+const styleSourceCache: Record<string, string> = {}
+
+const canUseDOM = () => typeof document !== "undefined"
+
+const injectStyle = (filename: string, css: string) => {
+  if (!canUseDOM()) {
+    return
+  }
+
+  let styleEl = styleElementCache[filename]
+  if (!styleEl) {
+    styleEl = document.createElement("style")
+    styleEl.setAttribute("data-filename", filename)
+    document.head.appendChild(styleEl)
+    styleElementCache[filename] = styleEl
+  }
+
+  if (styleEl.textContent !== css) {
+    styleEl.textContent = css
+  }
+}
+
+const processStyleFile = async (
+  filename: string,
+  content: string,
+): Promise<void> => {
+  if (styleSourceCache[filename] === content) {
+    const cachedCss = compiledStyleCache[filename]
+    if (cachedCss) {
+      injectStyle(filename, cachedCss)
+    }
+    return
+  }
+
+  try {
+    let css = content
+
+    if (filename.endsWith(".less")) {
+      const result = await less.render(content, {
+        filename,
+        syncImport: true,
+      })
+      css = result.css
+    }
+
+    styleSourceCache[filename] = content
+    compiledStyleCache[filename] = css
+    injectStyle(filename, css)
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown style processing error"
+    throw new Error(`Failed to process style "${filename}": ${message}`)
+  }
+}
+
+const processAllStyles = async (files: { [key: string]: string }) => {
+  if (!canUseDOM()) {
+    return
+  }
+
+  const styleEntries = Object.entries(files).filter(([filename]) =>
+    isStyleFile(filename),
+  )
+
+  await Promise.all(
+    styleEntries.map(([filename, content]) =>
+      processStyleFile(filename, content),
+    ),
+  )
+}
 
 // 添加全局类型声明
 declare global {
@@ -81,6 +160,10 @@ const DynamicComponentRenderer: React.FC<DynamicComponentRendererProps> = ({
           )
 
           if (normalizedPath) {
+            if (isStyleFile(normalizedPath)) {
+              return {}
+            }
+
             try {
               const result = processFile(normalizedPath)
 
@@ -204,6 +287,7 @@ const DynamicComponentRenderer: React.FC<DynamicComponentRendererProps> = ({
     const parseComponents = async () => {
       try {
         setError(null)
+        await processAllStyles(files)
         processFile(entryFile)
 
         const exportedComponent = modules[entryFile].exports.default
