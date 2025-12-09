@@ -1,6 +1,6 @@
 "use client"
 
-import { Settings2, SquareTerminal } from "lucide-react"
+import { Settings2, SquareTerminal, BookOpen } from "lucide-react"
 import { usePathname } from "next/navigation"
 
 export const routes = [
@@ -8,6 +8,11 @@ export const routes = [
     title: "Codegen",
     url: "/main/codegen",
     icon: SquareTerminal,
+  },
+  {
+    title: "Knowledge Base",
+    url: "/main/knowledge-base",
+    icon: BookOpen,
   },
   {
     title: "Settings",
