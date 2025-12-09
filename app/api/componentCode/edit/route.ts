@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
         rules: codegenDetail.rules,
         userId: userId!,
         component: params.component,
+        knowledgeBaseId: params.knowledgeBaseId,
       },
     })
 

@@ -2,6 +2,7 @@ import { streamText, CoreMessage } from "ai"
 import { FigmaDataWorkflowContext } from "../../type"
 import { FigmaSemanticNode } from "../extract-figma-data/utils"
 import basicComponentsDocs from "../../basic-components"
+import { RAGRetrievalService } from "@/lib/rag/rag-retrieval-service"
 /**
  * 组件树 DSL 类型定义
  * 这里可以根据实际需求定义 DSL 结构
@@ -47,13 +48,64 @@ const buildSystemPrompt = (): string => {
   return systemPrompt
 }
 
+const RAG_TIMEOUT_MS = 8_000
+
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
+  return await Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`RAG retrieval timed out after ${timeoutMs}ms`)),
+        timeoutMs,
+      ),
+    ),
+  ])
+}
+
+const safeRetrieve = async <T>(promise: Promise<T>): Promise<T | ""> => {
+  try {
+    return await withTimeout(promise, RAG_TIMEOUT_MS)
+  } catch (err) {
+    console.warn("RAG retrieval timed out, falling back to basic docs")
+    return "" as T | ""
+  }
+}
+
 /**
  * 获取业务组件文档
- * TODO: 后续从配置或数据库中获取业务组件文档
- * 可以是 JSON 或字符串格式
+ * 如果提供了知识库ID，则从知识库中检索相关内容
+ * 否则使用默认的基础组件文档
  */
-const getBusinessComponentDocs = (): string | object => {
-    return basicComponentsDocs;
+const getBusinessComponentDocs = async (
+  knowledgeBaseId: string | undefined,
+  figmaData: FigmaSemanticNode | null,
+  prompt: string
+): Promise<string | object> => {
+  if (knowledgeBaseId && knowledgeBaseId.trim() !== "") {
+    // 首先尝试根据Figma数据中的suggestedComponent检索相关文档
+    const componentDocs = await safeRetrieve(
+      RAGRetrievalService.retrieveComponentDocs(knowledgeBaseId, figmaData, 3),
+    )
+    
+    if (componentDocs) {
+      console.log("Retrieved component-specific documentation:", componentDocs.substring(0, 200) + "...")
+      return componentDocs
+    }
+    
+    // 如果没有找到组件特定文档，使用通用查询检索
+    const retrievedContent = await safeRetrieve(
+      RAGRetrievalService.retrieveRelevantContent(knowledgeBaseId, prompt),
+    )
+    
+    if (retrievedContent) {
+      console.log("Retrieved general relevant content:", retrievedContent.substring(0, 200) + "...")
+      return retrievedContent
+    }
+  }
+  
+  // 回退到基础组件文档
+  console.log("Using basic components docs (no knowledge base or no relevant content)")
+  return basicComponentsDocs
 }
 
 /**
@@ -126,8 +178,27 @@ export async function generateComponentTreeDSL(
   context: FigmaDataWorkflowContext,
 ): Promise<ComponentTreeDSL> {
   const systemPrompt = buildSystemPrompt()
-  const businessComponentDocs = getBusinessComponentDocs()
+  
+  // 构建用户输入文本用于RAG检索
+  const userText = context.query.prompt
+    .map(p => (p.type === "text" ? p.text : ""))
+    .filter(Boolean)
+    .join("\n")
+
   const figmaData = context.state.figmaData
+  // 调试：检查knowledgeBaseId
+  console.log("generateComponentTreeDSL - knowledgeBaseId:", context.query.knowledgeBaseId)
+  console.log("generateComponentTreeDSL - figmaData available:", !!figmaData)
+  console.log("generateComponentTreeDSL - userText:", userText.substring(0, 100))
+  
+  // 获取业务组件文档（可能来自知识库）
+  const businessComponentDocs = await getBusinessComponentDocs(
+    context.query.knowledgeBaseId,
+    figmaData,
+    userText
+  )
+  
+
 
   const messages = buildUserMessage(
     context.query.prompt,
@@ -170,4 +241,3 @@ export async function generateComponentTreeDSL(
     throw new Error(String(err))
   }
 }
-

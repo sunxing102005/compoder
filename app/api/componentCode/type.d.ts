@@ -45,6 +45,7 @@ declare namespace ComponentCodeApi {
     prompt: Prompt[]
     model: string
     provider: string
+    knowledgeBaseId?: string
   }
 
   export interface initRequest {
@@ -53,6 +54,7 @@ declare namespace ComponentCodeApi {
     prompt: Prompt[]
     model: string
     provider: string
+    knowledgeBaseId?: string
   }
 
   // create response
@@ -67,6 +69,7 @@ declare namespace ComponentCodeApi {
     component: component
     model: string
     provider: string
+    knowledgeBaseId?: string
   }
 
   // edit response

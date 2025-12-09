@@ -12,6 +12,12 @@ export const env = createEnv({
     NEXTAUTH_SECRET: z.string().min(1),
     GITHUB_ID: z.string().min(1),
     GITHUB_SECRET: z.string().min(1),
+    OPENAI_API_KEY: z.string().optional(),
+    EMBEDDING_MODEL: z.string().default("text-embedding-v4"),
+    VECTOR_STORE_TYPE: z.enum(["mongodb", "pgvector"]).default("mongodb"),
+    PGVECTOR_CONNECTION_STRING: z.string().optional(),
+    OPENAI_BASE_URL: z.string().optional(),
+    RAG_EMBED_TIMEOUT_MS: z.coerce.number().optional(),
   },
   client: {
     // NEXT_PUBLIC_PUBLISHABLE_KEY: z.string().min(1),

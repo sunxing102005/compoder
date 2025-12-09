@@ -14,7 +14,7 @@ import { FileNode } from "@/components/biz/CodeIDE"
 import { Prompt } from "@/lib/db/componentCode/types"
 import { useStreamingContent } from "@/hooks/useStreaming"
 import { useLLMSelectorContext } from "@/app/commons/LLMSelectorProvider"
-import { useParams } from "next/navigation"
+import { useParams,useSearchParams } from "next/navigation"
 
 export function useComponentDetail() {
   const { componentId, codegenId } = useParams<{
@@ -24,7 +24,8 @@ export function useComponentDetail() {
   const [activeVersionId, setActiveVersion] = useState("")
   const { provider, model, modelConfig } = useLLMSelectorContext()
   const initRef = useRef(false)
-
+  const searchParams =  useSearchParams();
+  const knowledgeBaseId = searchParams.get("knowledgeBaseId")
   const {
     data: componentDetail,
     isLoading,
@@ -62,15 +63,17 @@ export function useComponentDetail() {
         model,
         provider,
         prompt: lastVersionPrompt,
+        knowledgeBaseId: knowledgeBaseId || undefined,
       }
 
       const result = await startStreaming<string>(async () =>
+        //@ts-ignore
         initMutation.mutateAsync(requestParams),
       )
       refetch()
       return result
     },
-    [componentDetail, provider, model],
+    [componentDetail, provider, model, knowledgeBaseId],
   )
 
   const handleEdit = useCallback(
@@ -102,6 +105,7 @@ export function useComponentDetail() {
         },
         model,
         provider,
+        knowledgeBaseId: knowledgeBaseId || undefined,
       }
 
       const result = await startStreaming<string>(async () =>
@@ -118,7 +122,7 @@ export function useComponentDetail() {
       }
       return result
     },
-    [componentDetail, activeVersionId, provider, model],
+    [componentDetail, activeVersionId, provider, model, knowledgeBaseId],
   )
 
   const handleSave = async (files: FileNode[]) => {

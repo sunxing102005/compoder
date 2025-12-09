@@ -163,7 +163,7 @@ export async function generateComponentFromDSL(
       )
     }
 
-    console.log("generated component code from DSL:", accumulatedCode)
+    // console.log("generated component code from DSL:", accumulatedCode)
     
     return accumulatedCode
   } catch (err: unknown) {

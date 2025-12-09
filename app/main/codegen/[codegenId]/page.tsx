@@ -19,7 +19,7 @@ import {
   useCodegenDetail,
   useComponentCodeList,
 } from "../server-store/selectors"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   useDeleteComponentCode,
   useCreateComponentCode,
@@ -35,6 +35,7 @@ import {
   LLMSelectorButton,
 } from "@/app/commons/LLMSelectorProvider"
 import { useLLMOptions } from "@/app/commons/LLMSelectorProvider/useLLMOptions"
+import { KnowledgeBaseSelector } from "@/components/biz/KnowledgeBaseSelector"
 
 export default function CodegenDetailPage({
   params,
@@ -64,6 +65,7 @@ export default function CodegenDetailPage({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [provider, setProvider] = useState<AIProvider>()
   const [model, setModel] = useState<string>()
+  const [knowledgeBaseId, setKnowledgeBaseId] = useState<string>("")
   const { options } = useLLMOptions()
   const modelConfig = useMemo(() => {
     return options.find(opt => opt.modelId === model)
@@ -73,7 +75,9 @@ export default function CodegenDetailPage({
   const deleteComponentMutation = useDeleteComponentCode()
 
   const shouldShowList = useShowOnFirstData(componentCodeData?.items)
-
+  useEffect(()=>{
+console.log("knowledgeBaseId====>",knowledgeBaseId)
+  }, [knowledgeBaseId])
   // handle LLM change
   const handleLLMChange = (
     newProvider: AIProvider | undefined,
@@ -116,13 +120,14 @@ export default function CodegenDetailPage({
       codegenId: params.codegenId,
       model,
       provider,
+      knowledgeBaseId: knowledgeBaseId || undefined,
     }
 
     try {
       const { data } = await initComponentMutation.mutateAsync(requestParams)
       const componentId = data._id
       if (componentId) {
-        router.push(`/main/codegen/${params.codegenId}/${componentId}`)
+        router.push(`/main/codegen/${params.codegenId}/${componentId}?knowledgeBaseId=${knowledgeBaseId}`)
       }
     } catch (error) {
       console.error("Failed to create component:", error)
@@ -178,37 +183,43 @@ export default function CodegenDetailPage({
                   name={codegenDetail?.name || ""}
                 />
 
-                <ChatInput
-                  className="mt-6"
-                  value={chatValue}
-                  onChange={setChatValue}
-                  onSubmit={handleChatSubmit}
-                  actions={[
-                    supportVision && (
-                      <TooltipProvider key="draw-image">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <TldrawEdit
-                                disabled={isSubmitting}
-                                onSubmit={imageData => {
-                                  setImages(prev => [...prev, imageData])
-                                }}
-                              />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Draw An Image</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ),
-                    <LLMSelectorButton key="llm-selector" />,
-                  ].filter(Boolean)}
-                  images={supportVision ? images : []}
-                  onImageRemove={handleImageRemove}
-                  loading={isSubmitting}
-                />
+                <div className="space-y-4">
+                  <KnowledgeBaseSelector 
+                    value={knowledgeBaseId} 
+                    onChange={setKnowledgeBaseId} 
+                  />
+                  <ChatInput
+                    className="mt-2"
+                    value={chatValue}
+                    onChange={setChatValue}
+                    onSubmit={handleChatSubmit}
+                    actions={[
+                      supportVision && (
+                        <TooltipProvider key="draw-image">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <TldrawEdit
+                                  disabled={isSubmitting}
+                                  onSubmit={imageData => {
+                                    setImages(prev => [...prev, imageData])
+                                  }}
+                                />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Draw An Image</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ),
+                      <LLMSelectorButton key="llm-selector" />,
+                    ].filter(Boolean)}
+                    images={supportVision ? images : []}
+                    onImageRemove={handleImageRemove}
+                    loading={isSubmitting}
+                  />
+                </div>
               </>
             )}
           </div>
@@ -240,9 +251,12 @@ export default function CodegenDetailPage({
                   codeRendererServer={codegenDetail?.codeRendererUrl || ""}
                   // onEditClick={id => console.log("Edit clicked:", id)}
                   onDeleteClick={id => handleDeleteComponent(id)}
-                  onItemClick={id =>
-                    router.push(`/main/codegen/${params.codegenId}/${id}`)
-                  }
+                  onItemClick={id => {
+                    const url = knowledgeBaseId
+                      ? `/main/codegen/${params.codegenId}/${id}?knowledgeBaseId=${knowledgeBaseId}`
+                      : `/main/codegen/${params.codegenId}/${id}`
+                    router.push(url)
+                  }}
                 />
               )}
             </ComponentCodeFilterContainer>

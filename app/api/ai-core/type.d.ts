@@ -11,6 +11,7 @@ type WorkflowQuery = {
   rules: CodegenRule[]
   userId: string
   codegenId?: string
+  knowledgeBaseId?: string
   component?: {
     id: string
     name: string
