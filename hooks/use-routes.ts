@@ -5,17 +5,17 @@ import { usePathname } from "next/navigation"
 
 export const routes = [
   {
-    title: "Codegen",
+    title: "组件生成",
     url: "/main/codegen",
     icon: SquareTerminal,
   },
   {
-    title: "Knowledge Base",
+    title: "知识库",
     url: "/main/knowledge-base",
     icon: BookOpen,
   },
   {
-    title: "Settings",
+    title: "设置",
     url: "/main/settings",
     icon: Settings2,
   },

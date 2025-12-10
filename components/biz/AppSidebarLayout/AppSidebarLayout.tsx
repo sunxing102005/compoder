@@ -43,7 +43,7 @@ export function AppSidebarLayout({
                       Compoder
                     </div>
                     <div className="truncate text-primary/50 text-[11px]">
-                      Component Code Generator
+                      组件代码生成器
                     </div>
                   </div>
                 </a>

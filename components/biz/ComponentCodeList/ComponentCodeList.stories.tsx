@@ -79,7 +79,7 @@ export const mockItems = [
 export const Default: Story = {
   args: {
     items: mockItems,
-    codeRendererServer: "https://antd-renderer.pages.dev/artifacts",
+    codeRendererServer: "https://im-mobile-renderer.pages.dev/artifacts",
     onEditClick: id => console.log("Edit clicked:", id),
     onDeleteClick: id => console.log("Delete clicked:", id),
   },
@@ -88,7 +88,7 @@ export const Default: Story = {
 export const SingleItem: Story = {
   args: {
     items: [mockItems[0]],
-    codeRendererServer: "https://antd-renderer.pages.dev/artifacts",
+    codeRendererServer: "https://im-mobile-renderer.pages.dev/artifacts",
     onEditClick: id => console.log("Edit clicked:", id),
     onDeleteClick: id => console.log("Delete clicked:", id),
   },
@@ -97,7 +97,7 @@ export const SingleItem: Story = {
 export const TwoItems: Story = {
   args: {
     items: mockItems.slice(0, 2),
-    codeRendererServer: "https://antd-renderer.pages.dev/artifacts",
+    codeRendererServer: "https://im-mobile-renderer.pages.dev/artifacts",
     onEditClick: id => console.log("Edit clicked:", id),
     onDeleteClick: id => console.log("Delete clicked:", id),
   },
@@ -129,7 +129,7 @@ export const AnimatedAddition: Story = {
 
     return (
       <ComponentCodeList
-        codeRendererServer="https://antd-renderer.pages.dev/artifacts"
+        codeRendererServer="https://im-mobile-renderer.pages.dev/artifacts"
         items={items}
         onEditClick={id => console.log("Edit clicked:", id)}
         onDeleteClick={id => console.log("Delete clicked:", id)}
@@ -148,7 +148,7 @@ export const ClickToAddCodingBox: Story = {
           </h3>
         </div>
         <ComponentCodeList
-          codeRendererServer="https://antd-renderer.pages.dev/artifacts"
+          codeRendererServer="https://im-mobile-renderer.pages.dev/artifacts"
           items={mockItems}
           onEditClick={id => console.log("Edit clicked:", id)}
           onDeleteClick={id => console.log("Delete clicked:", id)}

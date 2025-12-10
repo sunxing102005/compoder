@@ -56,7 +56,9 @@ export interface CodegenDetailResponse {
   fullStack: string
   guides: string[]
   codeRendererUrl: string
-  rules: CodegenRule[]
+  fetchFigmaNodesUrl?: string
+  genComFromDslSysPrompt?: string
+  rules?: CodegenRule[]
 }
 
 export type AiClient = "cursor" | "claude-code"

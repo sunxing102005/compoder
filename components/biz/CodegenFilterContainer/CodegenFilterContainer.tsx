@@ -49,7 +49,7 @@ export function CodegenFilterContainer({
         >
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="All" className="flex-1 sm:flex-none">
-              All
+              全部
             </TabsTrigger>
             <TabsTrigger value="React" className="flex-1 sm:flex-none">
               React
@@ -63,7 +63,7 @@ export function CodegenFilterContainer({
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search components..."
+            placeholder="搜索生成器..."
             value={searchValue}
             onChange={handleSearchChange}
             className="pl-8"

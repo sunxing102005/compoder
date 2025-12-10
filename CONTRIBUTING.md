@@ -90,7 +90,7 @@ pnpm storybook
 
 ```bash
 # Start Antd rendering sandbox
-cd artifacts/antd-renderer
+cd artifacts/im-mobile-renderer
 pnpm dev
 
 # Start Shadcn UI rendering sandbox
@@ -130,7 +130,7 @@ pnpm dev
 └── xml-message-parser/ // XML parsing utilities
 
 [artifacts/]             // Rendering sandbox environments
-├── antd-renderer/      // Antd rendering environment
+├── im-mobile-renderer/ // IM Mobile rendering environment
 ├── shadcn-ui-renderer/ // Shadcn UI rendering environment
 ├── mui-renderer/       // MUI rendering environment
 └── element-plus-renderer/ // Element Plus rendering environment

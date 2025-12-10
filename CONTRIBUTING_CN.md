@@ -90,7 +90,7 @@ pnpm storybook
 
 ```bash
 # 启动 Antd 渲染沙箱
-cd artifacts/antd-renderer
+cd artifacts/im-mobile-renderer
 pnpm dev
 
 # 启动 Shadcn UI 渲染沙箱
@@ -130,7 +130,7 @@ pnpm dev
 └── xml-message-parser/ // XML 解析工具
 
 [artifacts/]             // 代码渲染沙箱环境
-├── antd-renderer/      // Antd 渲染环境
+├── im-mobile-renderer/ // IM Mobile 渲染环境
 ├── shadcn-ui-renderer/ // Shadcn UI 渲染环境
 ├── mui-renderer/       // MUI 渲染环境
 └── element-plus-renderer/ // Element Plus 渲染环境

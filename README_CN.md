@@ -151,8 +151,8 @@ pnpm dev
 **7. 启动代码渲染沙箱（Artifacts）**
 
 ```bash
-# 启动 Antd 渲染沙箱
-cd artifacts/antd-renderer
+# 启动 IM Mobile 渲染沙箱
+cd artifacts/im-mobile-renderer
 pnpm dev
 
 # 启动 Shadcn UI 渲染沙箱

@@ -11,10 +11,10 @@ PROXY_ARG=""
 # Enter artifacts directory
 cd artifacts
 
-# Build antd-renderer
-echo "Building antd-renderer..."
-cd antd-renderer
-docker build -t antd-renderer:latest $PROXY_ARG .
+# Build im-mobile-renderer
+echo "Building im-mobile-renderer..."
+cd im-mobile-renderer
+docker build -t im-mobile-renderer:latest $PROXY_ARG .
 cd ..
 
 # Build shadcn-ui-renderer
@@ -45,4 +45,4 @@ echo "All Docker images built successfully!"
 
 # List all built images
 echo "Docker images:"
-docker images | grep -E 'antd-renderer|shadcn-ui-renderer|element-ui-plus-renderer|material-ui-renderer|html-renderer' 
+docker images | grep -E 'im-mobile-renderer|shadcn-ui-renderer|element-ui-plus-renderer|material-ui-renderer|html-renderer' 

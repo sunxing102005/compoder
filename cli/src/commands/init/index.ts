@@ -131,7 +131,7 @@ initCommand
           await setupCursorRules(
             currentDir,
             selectedCodegen,
-            codegenDetail.rules,
+            codegenDetail.rules || [],
           )
         } else if (client === "claude-code") {
           // 生成 Claude Code MCP 配置
@@ -141,7 +141,7 @@ initCommand
           await setupClaudeCodeRules(
             currentDir,
             selectedCodegen,
-            codegenDetail.rules,
+            codegenDetail.rules || [],
           )
         }
       }

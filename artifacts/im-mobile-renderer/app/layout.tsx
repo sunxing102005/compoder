@@ -1,11 +1,9 @@
 import type { Metadata } from "next"
-import Script from "next/script"
-import { AntdRegistry } from "@ant-design/nextjs-registry"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Antd Renderer",
-  description: "Antd Renderer",
+  title: "IM Mobile Renderer",
+  description: "IM Mobile Renderer",
 }
 
 export default function RootLayout({
@@ -19,9 +17,7 @@ export default function RootLayout({
         {/* Tailwind CDN */}
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
-      <body>
-        <AntdRegistry>{children}</AntdRegistry>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }

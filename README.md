@@ -151,8 +151,8 @@ pnpm dev
 **7. Start Code Rendering Sandbox (Artifacts)**
 
 ```bash
-# Start Antd rendering sandbox
-cd artifacts/antd-renderer
+# Start IM Mobile rendering sandbox
+cd artifacts/im-mobile-renderer
 pnpm dev
 
 # Start Shadcn UI rendering sandbox

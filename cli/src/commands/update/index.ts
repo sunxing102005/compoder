@@ -77,7 +77,7 @@ updateCommand
           await setupCursorRules(
             currentDir,
             config.codegen,
-            codegenDetail.rules,
+            codegenDetail.rules || [],
           )
         } else if (client === "claude-code") {
           // 更新 Claude Code MCP 配置
@@ -87,7 +87,7 @@ updateCommand
           await setupClaudeCodeRules(
             currentDir,
             config.codegen,
-            codegenDetail.rules,
+            codegenDetail.rules || [],
           )
         } else {
           Logger.warn(`Unknown AI client: ${client}. Skipping...\n`)

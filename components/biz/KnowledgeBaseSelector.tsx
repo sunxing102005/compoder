@@ -20,9 +20,14 @@ interface KnowledgeBase {
 interface KnowledgeBaseSelectorProps {
   value?: string
   onChange: (knowledgeBaseId: string) => void
+  onSelect?: (payload: { id: string; name: string }) => void
 }
 
-export function KnowledgeBaseSelector({ value, onChange }: KnowledgeBaseSelectorProps) {
+export function KnowledgeBaseSelector({
+  value,
+  onChange,
+  onSelect,
+}: KnowledgeBaseSelectorProps) {
   const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -40,16 +45,16 @@ export function KnowledgeBaseSelector({ value, onChange }: KnowledgeBaseSelector
         setKnowledgeBases(data.data)
       } else {
         toast({
-          title: "Error",
-          description: data.error || "Failed to fetch knowledge bases",
+          title: "错误",
+          description: data.error || "获取知识库失败",
           variant: "destructive",
         })
       }
     } catch (error) {
       console.error("Error fetching knowledge bases:", error)
       toast({
-        title: "Error",
-        description: "Failed to fetch knowledge bases",
+        title: "错误",
+        description: "获取知识库失败",
         variant: "destructive",
       })
     } finally {
@@ -57,12 +62,20 @@ export function KnowledgeBaseSelector({ value, onChange }: KnowledgeBaseSelector
     }
   }
 
+  const handleChange = (val: string) => {
+    onChange(val)
+    const kb = knowledgeBases.find(k => k._id === val)
+    if (kb && onSelect) {
+      onSelect({ id: kb._id, name: kb.name })
+    }
+  }
+
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm font-medium">Knowledge Base:</span>
-      <Select value={value} onValueChange={onChange}>
+      <span className="text-sm font-medium">知识库：</span>
+      <Select value={value} onValueChange={handleChange}>
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Select knowledge base" />
+          <SelectValue placeholder="选择知识库" />
         </SelectTrigger>
         <SelectContent>
           {/* <SelectItem value="">None</SelectItem> */}

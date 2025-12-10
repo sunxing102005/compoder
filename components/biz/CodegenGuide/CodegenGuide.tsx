@@ -12,23 +12,23 @@ import { MessageCircleMore } from "lucide-react"
 const CodegenGuide = ({
   name,
   prompts,
-  subtitle = "Use one of the most common prompts below or use your own to begin",
+  subtitle = "可直接点击下方常用提示，或输入你自己的需求开始生成",
 }: CodegenGuideProps) => {
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
       <div className="mb-4 text-center">
         <h1 className="text-4xl font-bold mb-2">
-          Hi,{" "}
+          你好，{" "}
           <span className="bg-gradient-to-r from-violet-500 via-purple-500 to-blue-600 text-transparent bg-clip-text">
-            This is {name}
+            这里是 {name}
           </span>
         </h1>
         <p className="text-2xl">
-          What kind of{" "}
+          想要生成什么{" "}
           <span className="bg-gradient-to-r from-violet-400 via-purple-500 to-blue-500 text-transparent bg-clip-text">
-            component
+            组件
           </span>{" "}
-          would you like to build ?
+          呢？
         </p>
         {subtitle && (
           <p className="text-muted-foreground text-sm mt-2">{subtitle}</p>

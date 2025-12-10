@@ -9,7 +9,7 @@ import { Logger } from "./utils"
 export async function setupCursorRules(
   currentDir: string,
   codegenName: string,
-  rules: CodegenRule[],
+  rules: CodegenRule[] = [],
 ): Promise<void> {
   Logger.info("Setting up Cursor rules...")
 
@@ -52,7 +52,7 @@ export async function setupCursorRules(
 export async function setupClaudeCodeRules(
   currentDir: string,
   codegenName: string,
-  rules: CodegenRule[],
+  rules: CodegenRule[] = [],
 ): Promise<void> {
   Logger.info("Setting up Claude Code rules...")
 

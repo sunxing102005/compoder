@@ -5,6 +5,8 @@ interface JobItem {
   title: string
   description: string
   fullStack: StackType
+  knowledgeBaseId?: string
+  knowledgeBaseName?: string
 }
 
 export interface CodegenListProps {
