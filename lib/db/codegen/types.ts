@@ -26,5 +26,9 @@ export interface Codegen {
   guides: string[]
   model: string
   codeRendererUrl: string
-  rules: CodegenRule[]
+  rules?: CodegenRule[]
+  fetchFigmaNodesUrl?: string
+  genComFromDslSysPrompt?: string
+  knowledgeBaseId?: string
+  knowledgeBaseName?: string
 }

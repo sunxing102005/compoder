@@ -71,7 +71,24 @@ const CodegenSchema = new mongoose.Schema<Codegen>(
     rules: {
       type: [CodegenRuleSchema],
       default: [],
-      required: true,
+      required: false,
+    },
+    fetchFigmaNodesUrl: {
+      type: String,
+      default: undefined,
+    },
+    genComFromDslSysPrompt: {
+      type: String,
+      default: undefined,
+    },
+    knowledgeBaseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "KnowledgeBase",
+      default: undefined,
+    },
+    knowledgeBaseName: {
+      type: String,
+      default: undefined,
     },
   },
   {

@@ -45,8 +45,10 @@ async function migrate() {
         delete existingData.__v
         delete existingData.createdAt
         delete existingData.updatedAt
-
-        // Remove _id fields from nested objects in rules array
+        if (existingData.knowledgeBaseId) {
+          existingData.knowledgeBaseId =
+            existingData.knowledgeBaseId.toString()
+        }
         if (existingData.rules && Array.isArray(existingData.rules)) {
           existingData.rules = existingData.rules.map(
             (rule: Record<string, any>) => {
@@ -58,6 +60,13 @@ async function migrate() {
         }
 
         const currentData = { ...codegen }
+        if (
+          existingData.knowledgeBaseId &&
+          currentData.knowledgeBaseId === undefined
+        ) {
+          currentData.knowledgeBaseId = existingData.knowledgeBaseId
+          currentData.knowledgeBaseName = existingData.knowledgeBaseName
+        }
 
         // Convert to JSON and back to normalize the objects
         const normalizedExisting = JSON.parse(JSON.stringify(existingData))
