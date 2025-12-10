@@ -49,9 +49,10 @@ const simplifiedFileStructure = `${IMPORTANT_NOTE}Output component code in XML f
  * 构建系统提示词
  */
 const buildSystemPrompt = (
-  rules: InitialWorkflowContext["query"]["rules"],
+  rules?: InitialWorkflowContext["query"]["rules"],
 ): string => {
-  const fileStructure = getFileStructureRule(rules) || simplifiedFileStructure
+  const fileStructure =
+    getFileStructureRule(rules || []) || simplifiedFileStructure
 
 
 
@@ -169,4 +170,3 @@ export async function updateComponentCodeFromInput(
     throw new Error(String(err))
   }
 }
-

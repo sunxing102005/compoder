@@ -1,11 +1,7 @@
 import { streamText, CoreMessage } from "ai"
 import { ComponentDSLWorkflowContext } from "../../type"
 import { ComponentTreeDSL } from "../generate-component-dsl"
-import {
-  getPublicComponentsRule,
-  getStylesRule,
-  getSpecialAttentionRules,
-} from "../../utils/codegenRules"
+
 
 const IMPORTANT_NOTE = `Important: Write the code directly inside each ComponentFile tag. Do NOT use any code block markers (like \`\`\`tsx, \`\`\`ts, etc.) inside the XML tags.
 
@@ -42,57 +38,43 @@ const simplifiedFileStructure = `${IMPORTANT_NOTE}Output component code in XML f
   </ComponentFile>
 </ComponentArtifact>
 `
+const baseSystemPrompt = `
+    ## 目标
+        根据组件树 DSL 生成完整的组件代码，生成「React + TypeScript + Less」代码。
+    ## 输入
+        - 组件树 DSL（JSON 格式）
+    ## 样式规范
+        - 样式文件必须使用 LESS 语法（index.less）
+        - 可以使用 LESS 的特性，如嵌套、变量、混合等
+        - 使用 BEM 风格 className，例如：".order-submit-bar", ".order-submit-bar__price".
+        - 使用 flexible 布局，适配移动端宽度（375 逻辑宽考虑）。
+        - 不使用行内样式
 
+    ## Props 设计
+        - 根据 JSON 中的 props/文案/交互，设计合理的 Props interface。
+        - 不要使用 any。
+        - 对外 props 要尽量通用：如 title、desc、price、onSubmit 等。
+        - 为组件属性设置默认值供开发调试样式使用,默认值与json数据中一致。
+    ## 组件写法
+        - 使用 React + TSX 函数组件，使用 FC<Props>。
+        - 仅使用内部基础组件：Font, Button
+        - 所有基础组件从 "@capp/immotors-ui" 导入。
+        - 样式文件命名：index.less，并通过 "import './index.less';" 引入。
+`
 /**
  * 构建系统提示词
  * TODO: 后续补充特定的提示词内容
  */
 const buildSystemPrompt = (
-  rules: ComponentDSLWorkflowContext["query"]["rules"],
+    context: ComponentDSLWorkflowContext,
 ): string => {
-  const stylesRule = getStylesRule(rules)
-  const publicComponents = getPublicComponentsRule(rules)
-  const additionalRules = getSpecialAttentionRules(rules)
-
-  // 生成开源组件说明
-//   const openSourceComponents = publicComponents && publicComponents.length > 0
-//     ? `
-//     **Open Source Components**
-//     - You can use components from ${publicComponents.join(", ")}
-//     - Use the latest stable version of APIs
-//   `
-//     : ""
-
-  // TODO: 补充特定的提示词内容
+  const basePrompt = context.query.genComFromDslSysPrompt || baseSystemPrompt;
   const specificPrompt = `
     # 你是一个高级前端工程师，擅长根据组件树 DSL 生成高质量的组件代码
-    
-    ## 目标
-    根据组件树 DSL 生成完整的组件代码，生成「React + TypeScript + Less」代码。
-    
-    ## 输入
-    - 组件树 DSL（JSON 格式）
-    
-    ## 输出要求
+    # 基本要求
+    ${basePrompt}
+    # 输出要求
     ${simplifiedFileStructure}
-    
-    ## 样式规范
-    - 样式文件必须使用 LESS 语法（index.less）
-    - 可以使用 LESS 的特性，如嵌套、变量、混合等
-    - 使用 BEM 风格 className，例如：".order-submit-bar", ".order-submit-bar__price".
-    - 使用 flexible 布局，适配移动端宽度（375 逻辑宽考虑）。
-    - 不使用行内样式
-
-    ## Props 设计
-    - 根据 JSON 中的 props/文案/交互，设计合理的 Props interface。
-    - 不要使用 any。
-    - 对外 props 要尽量通用：如 title、desc、price、onSubmit 等。
-    - 为组件属性设置默认值供开发调试样式使用,默认值与json数据中一致。
-    ## 组件写法
-    - 使用 React + TSX 函数组件，使用 FC<Props>。
-    - 仅使用内部基础组件：Font, Button
-    - 所有基础组件从 "@capp/immotors-ui" 导入。
-    - 样式文件命名：index.less，并通过 "import './index.less';" 引入。
   `
 
   return specificPrompt
@@ -105,16 +87,9 @@ const buildUserMessage = (
   prompt: ComponentDSLWorkflowContext["query"]["prompt"],
   componentTreeDSL: ComponentTreeDSL,
 ): Array<CoreMessage> => {
-  // 构建用户输入文本
-  const userText = prompt
-    .map(p => (p.type === "text" ? p.text : ""))
-    .filter(Boolean)
-    .join("\n")
 
   // 格式化 DSL 数据
   const dslContent = JSON.stringify(componentTreeDSL, null, 2)
-//   ## 用户需求
-//   ${userText || "无"}
   const content = `
 ## 组件树 DSL
 ${dslContent}
@@ -135,7 +110,7 @@ ${dslContent}
 export async function generateComponentFromDSL(
   context: ComponentDSLWorkflowContext,
 ): Promise<string> {
-  const systemPrompt = buildSystemPrompt(context.query.rules)
+  const systemPrompt = buildSystemPrompt(context)
   const componentTreeDSL = context.state.componentTreeDSL
 
   const messages = buildUserMessage(context.query.prompt, componentTreeDSL)
@@ -174,4 +149,3 @@ export async function generateComponentFromDSL(
     throw new Error(String(err))
   }
 }
-

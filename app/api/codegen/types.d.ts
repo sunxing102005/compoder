@@ -10,7 +10,15 @@ declare namespace CodegenApi {
   }
   // codegen list response
   export interface ListResponse {
-    data: Pick<Codegen, "_id" | "title" | "description" | "fullStack">[]
+    data: Pick<
+      Codegen,
+      | "_id"
+      | "title"
+      | "description"
+      | "fullStack"
+      | "knowledgeBaseId"
+      | "knowledgeBaseName"
+    >[]
     total: number
   }
   // codegen detail request
@@ -27,7 +35,23 @@ declare namespace CodegenApi {
       | "fullStack"
       | "guides"
       | "codeRendererUrl"
+      | "knowledgeBaseId"
+      | "knowledgeBaseName"
+      | "fetchFigmaNodesUrl"
+      | "genComFromDslSysPrompt"
+      | "rules"
     >
+  }
+
+  export interface UpdateKnowledgeBaseRequest {
+    codegenId: string
+    knowledgeBaseId: string
+  }
+
+  export interface UpdateKnowledgeBaseResponse {
+    success: boolean
+    knowledgeBaseId: string
+    knowledgeBaseName: string
   }
 
   // MCP component list request

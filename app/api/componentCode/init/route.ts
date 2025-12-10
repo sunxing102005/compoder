@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
 
     const response = new Response(stream.readable)
 
+    const kbId = body.knowledgeBaseId || codegenDetail.knowledgeBaseId
+
     run(initComponentWorkflow, {
       stream: {
         write: (chunk: string) => writer.write(encoder.encode(chunk)),
@@ -42,7 +44,10 @@ export async function POST(request: NextRequest) {
         rules: codegenDetail.rules,
         userId: userId!,
         codegenId: body.codegenId,
-        knowledgeBaseId: body.knowledgeBaseId,
+        knowledgeBaseId: kbId ? String(kbId) : undefined,
+        knowledgeBaseName: codegenDetail.knowledgeBaseName,
+        fetchFigmaNodesUrl: codegenDetail.fetchFigmaNodesUrl,
+        genComFromDslSysPrompt: codegenDetail.genComFromDslSysPrompt,
         component: body.component,
       },
     })

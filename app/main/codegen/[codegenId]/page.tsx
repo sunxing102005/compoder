@@ -75,9 +75,11 @@ export default function CodegenDetailPage({
   const deleteComponentMutation = useDeleteComponentCode()
 
   const shouldShowList = useShowOnFirstData(componentCodeData?.items)
-  useEffect(()=>{
-console.log("knowledgeBaseId====>",knowledgeBaseId)
-  }, [knowledgeBaseId])
+  useEffect(() => {
+    if (codegenDetail?.knowledgeBaseId && !knowledgeBaseId) {
+      setKnowledgeBaseId(codegenDetail.knowledgeBaseId)
+    }
+  }, [codegenDetail?.knowledgeBaseId, knowledgeBaseId])
   // handle LLM change
   const handleLLMChange = (
     newProvider: AIProvider | undefined,
@@ -92,9 +94,9 @@ console.log("knowledgeBaseId====>",knowledgeBaseId)
     if (!chatValue.trim() && images.length === 0) return
 
     if (!model || !provider) {
-      toast({
-        title: "Error",
-        description: "Please select a model and provider",
+        toast({
+        title: "提示",
+        description: "请选择模型和提供商",
         variant: "default",
       })
       return
@@ -157,8 +159,8 @@ console.log("knowledgeBaseId====>",knowledgeBaseId)
       <div>
         <AppHeader
           breadcrumbs={[
-            { label: "Codegen", href: "/main/codegen" },
-            { label: codegenDetail?.name || "Codegen Detail" },
+            { label: "组件生成器", href: "/main/codegen" },
+            { label: codegenDetail?.name || "生成详情" },
           ]}
         />
         <ScrollArea className="h-[calc(100vh-88px)]">
@@ -184,10 +186,17 @@ console.log("knowledgeBaseId====>",knowledgeBaseId)
                 />
 
                 <div className="space-y-4">
-                  <KnowledgeBaseSelector 
-                    value={knowledgeBaseId} 
-                    onChange={setKnowledgeBaseId} 
-                  />
+                  <div className="flex items-center justify-between">
+                    <KnowledgeBaseSelector 
+                      value={knowledgeBaseId} 
+                      onChange={setKnowledgeBaseId} 
+                    />
+                    {codegenDetail?.knowledgeBaseName && (
+                      <p className="text-sm text-muted-foreground">
+                        默认关联：{codegenDetail.knowledgeBaseName}
+                      </p>
+                    )}
+                  </div>
                   <ChatInput
                     className="mt-2"
                     value={chatValue}
@@ -229,7 +238,7 @@ console.log("knowledgeBaseId====>",knowledgeBaseId)
               "w-full max-w-[1920px] mx-auto px-6",
             )}
           >
-            <p className="text-lg font-bold mb-4">Component List</p>
+            <p className="text-lg font-bold mb-4">组件列表</p>
             <ComponentCodeFilterContainer
               total={componentCodeData?.total || 0}
               currentPage={currentPage}

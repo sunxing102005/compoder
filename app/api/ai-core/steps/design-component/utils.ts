@@ -16,8 +16,8 @@ export interface ComponentDesign {
   retrievedAugmentationContent?: string
 }
 
-const buildSystemPrompt = (rules: WorkflowContext["query"]["rules"]) => {
-  const componentsDescription = getPrivateDocsDescription(rules)
+const buildSystemPrompt = (rules?: WorkflowContext["query"]["rules"]) => {
+  const componentsDescription = getPrivateDocsDescription(rules || [])
   const hasComponentLibraries = !!componentsDescription
 
   // create prompt parts for different situations

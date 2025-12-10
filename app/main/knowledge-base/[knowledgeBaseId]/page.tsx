@@ -35,16 +35,16 @@ export default function KnowledgeBaseDocumentsPage() {
         setDocuments(data.data)
       } else {
         toast({
-          title: "Error",
-          description: data.error || "Failed to fetch documents",
+          title: "错误",
+          description: data.error || "获取文档失败",
           variant: "destructive",
         })
       }
     } catch (error) {
       console.error("Error fetching documents:", error)
       toast({
-        title: "Error",
-        description: "Failed to fetch documents",
+        title: "错误",
+        description: "获取文档失败",
         variant: "destructive",
       })
     } finally {
@@ -86,7 +86,7 @@ export default function KnowledgeBaseDocumentsPage() {
   }, [documents])
 
   const handleDeleteDocument = async (documentId: string, fileName: string) => {
-    if (!confirm(`Are you sure you want to delete document "${fileName}"?`)) {
+    if (!confirm(`确定删除文档「${fileName}」吗？`)) {
       return
     }
 
@@ -99,22 +99,22 @@ export default function KnowledgeBaseDocumentsPage() {
       
       if (data.success) {
         toast({
-          title: "Success",
-          description: "Document deleted successfully",
+          title: "成功",
+          description: "文档删除成功",
         })
         fetchDocuments()
       } else {
         toast({
-          title: "Error",
-          description: data.error || "Failed to delete document",
+          title: "错误",
+          description: data.error || "删除文档失败",
           variant: "destructive",
         })
       }
     } catch (error) {
       console.error("Error deleting document:", error)
       toast({
-        title: "Error",
-        description: "Failed to delete document",
+        title: "错误",
+        description: "删除文档失败",
         variant: "destructive",
       })
     }
@@ -140,22 +140,22 @@ export default function KnowledgeBaseDocumentsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Knowledge Base Documents</h1>
+        <h1 className="text-2xl font-bold">知识库文档</h1>
         <Button onClick={() => router.push(`/main/knowledge-base/${knowledgeBaseId}/upload`)}>
           <Plus className="w-4 h-4 mr-2" />
-          Add Documents
+          上传文档
         </Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-8">Loading documents...</div>
+        <div className="text-center py-8">文档加载中...</div>
       ) : documents.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          No documents found. Upload your first document to get started.
+          暂无文档，上传后开始使用。
         </div>
       ) : (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Uploaded Documents ({documents.length})</h2>
+          <h2 className="text-xl font-semibold">已上传文档（{documents.length}）</h2>
           <div className="grid gap-4">
             {documents.map((doc) => (
               <Card key={doc._id}>
@@ -171,7 +171,7 @@ export default function KnowledgeBaseDocumentsPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={`text-sm ${getStatusColor(doc.status)}`}>
-                      {doc.status.charAt(0).toUpperCase() + doc.status.slice(1)}
+                      {getStatusText(doc.status)}
                     </span>
                     <Button
                       variant="destructive"
@@ -190,3 +190,15 @@ export default function KnowledgeBaseDocumentsPage() {
     </div>
   )
 }
+  const getStatusText = (status: string): string => {
+    switch (status) {
+      case "completed":
+        return "已完成"
+      case "processing":
+        return "处理中"
+      case "failed":
+        return "失败"
+      default:
+        return "待处理"
+    }
+  }

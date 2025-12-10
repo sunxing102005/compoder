@@ -9,9 +9,9 @@ import {
 
 // Generate the output specification section
 const generateOutputSpecification = (
-  rules: WorkflowContext["query"]["rules"],
+  rules?: WorkflowContext["query"]["rules"],
 ): string => {
-  const fileStructure = getFileStructureRule(rules)
+  const fileStructure = getFileStructureRule(rules || [])
   if (!fileStructure) return ""
 
   return `
@@ -22,9 +22,9 @@ const generateOutputSpecification = (
 
 // Generate the style specification section
 const generateStyleSpecification = (
-  rules: WorkflowContext["query"]["rules"],
+  rules?: WorkflowContext["query"]["rules"],
 ): string => {
-  const styles = getStylesRule(rules)
+  const styles = getStylesRule(rules || [])
   if (!styles) return ""
 
   return `
@@ -35,9 +35,9 @@ const generateStyleSpecification = (
 
 // Generate the open source components section
 const generateOpenSourceComponents = (
-  rules: WorkflowContext["query"]["rules"],
+  rules?: WorkflowContext["query"]["rules"],
 ): string => {
-  const publicComponents = getPublicComponentsRule(rules)
+  const publicComponents = getPublicComponentsRule(rules || [])
   if (!publicComponents || publicComponents.length === 0) return ""
 
   return `
@@ -65,9 +65,9 @@ const generatePrivateComponents = (
 
 // Generate the additional rules section
 const generateAdditionalRules = (
-  rules: WorkflowContext["query"]["rules"],
+  rules?: WorkflowContext["query"]["rules"],
 ): string => {
-  const specialAttentionRules = getSpecialAttentionRules(rules)
+  const specialAttentionRules = getSpecialAttentionRules(rules || [])
   if (!specialAttentionRules) return ""
 
   return `
@@ -78,7 +78,7 @@ const generateAdditionalRules = (
 
 // build system prompt
 export const buildSystemPrompt = (
-  rules: WorkflowContext["query"]["rules"],
+  rules?: WorkflowContext["query"]["rules"],
   retrievedAugmentationContent?: string,
 ): string => {
   // Generate each section

@@ -8,6 +8,8 @@ import {
 } from "@/app/services/componentCode/componentCode.service"
 import { ComponentCodeApi } from "@/app/api/componentCode/type"
 import { useToast } from "@/hooks/use-toast"
+import { updateCodegenKnowledgeBase } from "@/app/services/codegen/codegen.service"
+import { CodegenApi } from "@/app/api/codegen/types"
 
 export const useCreateComponentCode = () => {
   const { toast } = useToast()
@@ -104,6 +106,30 @@ export const useDeleteComponentCode = () => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete component",
+        variant: "destructive",
+      })
+    },
+  })
+}
+
+export const useUpdateCodegenKnowledgeBase = () => {
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
+
+  return useMutation<
+    CodegenApi.UpdateKnowledgeBaseResponse,
+    Error,
+    CodegenApi.UpdateKnowledgeBaseRequest
+  >({
+    mutationFn: params => updateCodegenKnowledgeBase(params),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getCodegenList"] })
+      queryClient.invalidateQueries({ queryKey: ["codegen-detail"] })
+    },
+    onError: error => {
+      toast({
+        title: "更新知识库失败",
+        description: error.message,
         variant: "destructive",
       })
     },

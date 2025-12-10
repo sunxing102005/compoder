@@ -56,10 +56,14 @@ function parseFigmaLink(link: string): { fileKey: string; frameId: string } | nu
 async function fetchFigmaSemanticNodes(
   fileKey: string,
   frameId: string,
+  fetchFigmaNodesUrl?: string,
 ): Promise<FigmaSemanticNode | null> {
   try {
+    const baseUrl =
+      fetchFigmaNodesUrl ||
+      "http://localhost:3100/figma/semantic-nodes"
     const response = await fetch(
-      `http://localhost:3100/figma/semantic-nodes?fileKey=${encodeURIComponent(fileKey)}&frameId=${encodeURIComponent(frameId)}`,
+      `${baseUrl}?fileKey=${encodeURIComponent(fileKey)}&frameId=${encodeURIComponent(frameId)}`,
       {
         method: "GET",
         headers: {
@@ -110,7 +114,11 @@ export async function extractFigmaDataFromPrompt(
 
   // 3. 调用接口获取数据
   try {
-    const figmaData = await fetchFigmaSemanticNodes(fileKey, frameId)
+    const figmaData = await fetchFigmaSemanticNodes(
+      fileKey,
+      frameId,
+      context.query.fetchFigmaNodesUrl,
+    )
     // console.log("figmaData==>", figmaData)
     if (figmaData) {
       context.stream.write("Successfully fetched Figma data \n")
@@ -121,4 +129,3 @@ export async function extractFigmaDataFromPrompt(
     throw error
   }
 }
-

@@ -54,7 +54,7 @@ export default function Codegen() {
 
   return (
     <div>
-      <AppHeader breadcrumbs={[{ label: "Codegen" }]} />
+      <AppHeader breadcrumbs={[{ label: "组件生成器" }]} />
       <CodegenFilterContainer
         selectedStack={filters.selectedStack}
         onStackChange={handleStackChange}

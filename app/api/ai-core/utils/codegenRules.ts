@@ -53,19 +53,19 @@ const defaultAdditionalRules = `
 - Optimize rendering performance where possible
 `
 
-export function getPublicComponentsRule(rules: CodegenRule[]) {
+export function getPublicComponentsRule(rules: CodegenRule[] = []) {
   return rules.find(rule => rule.type === "public-components")?.dataSet
 }
 
-export function getStylesRule(rules: CodegenRule[]) {
+export function getStylesRule(rules: CodegenRule[] = []) {
   return rules.find(rule => rule.type === "styles")?.prompt ?? defaultStyles
 }
 
-export function getPrivateComponentDocs(rules: CodegenRule[]) {
+export function getPrivateComponentDocs(rules: CodegenRule[] = []) {
   return rules.find(rule => rule.type === "private-components")?.docs
 }
 
-export function getPrivateDocsDescription(rules: CodegenRule[]): string {
+export function getPrivateDocsDescription(rules: CodegenRule[] = []): string {
   const docs = getPrivateComponentDocs(rules)
   const publicLibraryComponents = getPublicComponentsRule(rules)
 
@@ -144,7 +144,7 @@ export function getPrivateDocsDescription(rules: CodegenRule[]): string {
   return templates.join("\n\n")
 }
 
-export function getFileStructureRule(rules: CodegenRule[]) {
+export function getFileStructureRule(rules: CodegenRule[] = []) {
   const customPrompt = rules.find(
     rule => rule.type === "file-structure",
   )?.prompt
@@ -154,7 +154,7 @@ export function getFileStructureRule(rules: CodegenRule[]) {
   return defaultFileStructure
 }
 
-export function getSpecialAttentionRules(rules: CodegenRule[]) {
+export function getSpecialAttentionRules(rules: CodegenRule[] = []) {
   return (
     rules.find(rule => rule.type === "attention-rules")?.prompt ??
     defaultAdditionalRules

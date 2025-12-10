@@ -8,10 +8,13 @@ import { ComponentTreeDSL } from "./steps/generate-component-dsl"
 type WorkflowQuery = {
   prompt: Prompt[]
   aiModel: LanguageModel
-  rules: CodegenRule[]
+  rules?: CodegenRule[]
   userId: string
   codegenId?: string
   knowledgeBaseId?: string
+  knowledgeBaseName?: string
+  fetchFigmaNodesUrl?: string
+  genComFromDslSysPrompt?: string
   component?: {
     id: string
     name: string

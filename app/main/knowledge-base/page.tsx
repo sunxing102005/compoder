@@ -54,16 +54,16 @@ export default function KnowledgeBasePage() {
         setKnowledgeBases(data.data)
       } else {
         toast({
-          title: "Error",
-          description: data.error || "Failed to fetch knowledge bases",
+          title: "错误",
+          description: data.error || "获取知识库失败",
           variant: "destructive",
         })
       }
     } catch (error) {
       console.error("Error fetching knowledge bases:", error)
       toast({
-        title: "Error",
-        description: "Failed to fetch knowledge bases",
+        title: "错误",
+        description: "获取知识库失败",
         variant: "destructive",
       })
     } finally {
@@ -88,8 +88,8 @@ export default function KnowledgeBasePage() {
       
       if (data.success) {
         toast({
-          title: "Success",
-          description: "Knowledge base created successfully",
+          title: "成功",
+          description: "知识库创建成功",
         })
         setIsCreateDialogOpen(false)
         setNewKB({
@@ -99,23 +99,23 @@ export default function KnowledgeBasePage() {
         fetchKnowledgeBases()
       } else {
         toast({
-          title: "Error",
-          description: data.error || "Failed to create knowledge base",
+          title: "错误",
+          description: data.error || "创建知识库失败",
           variant: "destructive",
         })
       }
     } catch (error) {
       console.error("Error creating knowledge base:", error)
       toast({
-        title: "Error",
-        description: "Failed to create knowledge base",
+        title: "错误",
+        description: "创建知识库失败",
         variant: "destructive",
       })
     }
   }
 
   const handleDeleteKnowledgeBase = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete knowledge base "${name}"? This action cannot be undone.`)) {
+    if (!confirm(`确定删除知识库「${name}」吗？此操作不可恢复。`)) {
       return
     }
 
@@ -128,22 +128,22 @@ export default function KnowledgeBasePage() {
       
       if (data.success) {
         toast({
-          title: "Success",
-          description: "Knowledge base deleted successfully",
+          title: "成功",
+          description: "知识库删除成功",
         })
         fetchKnowledgeBases()
       } else {
         toast({
-          title: "Error",
-          description: data.error || "Failed to delete knowledge base",
+          title: "错误",
+          description: data.error || "删除知识库失败",
           variant: "destructive",
         })
       }
     } catch (error) {
       console.error("Error deleting knowledge base:", error)
       toast({
-        title: "Error",
-        description: "Failed to delete knowledge base",
+        title: "错误",
+        description: "删除知识库失败",
         variant: "destructive",
       })
     }
@@ -152,50 +152,48 @@ export default function KnowledgeBasePage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Knowledge Base Management</h1>
+        <h1 className="text-2xl font-bold">知识库管理</h1>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              New Knowledge Base
+              新建知识库
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Create Knowledge Base</DialogTitle>
-              <DialogDescription>
-                Create a new knowledge base for your RAG system.
-              </DialogDescription>
+              <DialogTitle>新建知识库</DialogTitle>
+              <DialogDescription>创建一个新的 RAG 知识库。</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
-                  Name
+                  名称
                 </Label>
                 <Input
                   id="name"
                   value={newKB.name}
                   onChange={(e) => setNewKB({ ...newKB, name: e.target.value })}
                   className="col-span-3"
-                  placeholder="Enter knowledge base name"
+                  placeholder="请输入知识库名称"
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="description" className="text-right">
-                  Description
+                  描述
                 </Label>
                 <Input
                   id="description"
                   value={newKB.description}
                   onChange={(e) => setNewKB({ ...newKB, description: e.target.value })}
                   className="col-span-3"
-                  placeholder="Optional description"
+                  placeholder="可选描述"
                 />
               </div>
             </div>
             <DialogFooter>
               <Button type="submit" onClick={handleCreateKnowledgeBase}>
-                Create
+                创建
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -203,10 +201,10 @@ export default function KnowledgeBasePage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-8">Loading...</div>
+        <div className="text-center py-8">加载中...</div>
       ) : knowledgeBases.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          No knowledge bases found. Create your first knowledge base to get started.
+          暂无知识库，创建一个开始使用吧。
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -217,18 +215,18 @@ export default function KnowledgeBasePage() {
                   <BookOpen className="w-5 h-5" />
                   {kb.name}
                 </CardTitle>
-                <CardDescription>{kb.description || "No description"}</CardDescription>
+                <CardDescription>{kb.description || "暂无描述"}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-sm text-muted-foreground space-y-1">
-                  <div>Created: {new Date(kb.createdAt).toLocaleDateString()}</div>
+                  <div>创建时间：{new Date(kb.createdAt).toLocaleDateString()}</div>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
                 <Button variant="outline" size="sm" asChild>
                   <a href={`/main/knowledge-base/${kb._id}`}>
                     <Upload className="w-4 h-4 mr-2" />
-                    Manage Documents
+                    管理文档
                   </a>
                 </Button>
                 <Button

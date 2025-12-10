@@ -35,3 +35,20 @@ export const getCodegenDetail = async (
     throw error
   }
 }
+
+export const updateCodegenKnowledgeBase = async (
+  params: CodegenApi.UpdateKnowledgeBaseRequest,
+): Promise<CodegenApi.UpdateKnowledgeBaseResponse> => {
+  try {
+    const response = await request("/codegen/knowledge-base", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    })
+    return await response.json()
+  } catch (error) {
+    throw error
+  }
+}

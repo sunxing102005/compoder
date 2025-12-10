@@ -116,8 +116,8 @@ export default function KnowledgeBaseUploadPage() {
       )
       setUploadStatus(prev => ({ ...prev, [fileId]: 'error' }))
       toast({
-        title: "Error",
-        description: `Failed to upload ${fileObj.file.name}`,
+        title: "错误",
+        description: `上传 ${fileObj.file.name} 失败`,
         variant: "destructive",
       })
     }
@@ -134,7 +134,7 @@ export default function KnowledgeBaseUploadPage() {
       // For Excel files, show a message instead of trying to parse binary data
       setFilePreviews(prev => ({ 
         ...prev, 
-        [fileId]: '[Excel file - Binary format not displayable in preview]' 
+        [fileId]: '[Excel 文件预览暂不支持展示二进制内容]' 
       }))
       return
     }
@@ -149,7 +149,7 @@ export default function KnowledgeBaseUploadPage() {
         const chunks = simulateChunking(content, chunkingConfig)
         setFilePreviews(prev => ({ ...prev, [fileId]: chunks.join('\n--- CHUNK SEPARATOR ---\n') }))
       } else {
-        setFilePreviews(prev => ({ ...prev, [fileId]: '[Binary file - Not displayable]' }))
+        setFilePreviews(prev => ({ ...prev, [fileId]: '[二进制文件，无法预览]' }))
       }
     }
     
@@ -227,8 +227,8 @@ export default function KnowledgeBaseUploadPage() {
       }
 
       toast({
-        title: "Success",
-        description: "Documents uploaded and configured successfully",
+        title: "成功",
+        description: "文档上传并配置完成",
       })
       
       // Wait a moment for backend processing to start, then redirect
@@ -238,8 +238,8 @@ export default function KnowledgeBaseUploadPage() {
     } catch (error) {
       console.error('Confirm upload error:', error)
       toast({
-        title: "Error",
-        description: "Failed to confirm upload",
+        title: "错误",
+        description: "确认上传失败",
         variant: "destructive",
       })
     }
@@ -251,8 +251,8 @@ export default function KnowledgeBaseUploadPage() {
       const pendingFiles = uploadedFiles.filter(f => f.status === 'pending')
       if (pendingFiles.length === 0 && uploadedFiles.length === 0) {
         toast({
-          title: "Warning",
-          description: "Please select at least one file to upload",
+          title: "提醒",
+          description: "请至少选择一个文件上传",
           variant: "destructive",
         })
         return
@@ -270,8 +270,8 @@ export default function KnowledgeBaseUploadPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Step 1: Upload Files</CardTitle>
-          <CardDescription>Select files to upload to your knowledge base.</CardDescription>
+          <CardTitle>步骤 1：上传文件</CardTitle>
+          <CardDescription>选择要导入知识库的文件。</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="border-2 border-dashed border-muted-foreground rounded-lg p-8 text-center">
@@ -285,16 +285,16 @@ export default function KnowledgeBaseUploadPage() {
               id="file-upload"
             />
             <Label htmlFor="file-upload" className="cursor-pointer">
-              <Button variant="outline">Choose Files</Button>
+              <Button variant="outline">选择文件</Button>
             </Label>
             <p className="text-sm text-muted-foreground mt-2">
-              Supported formats: .txt, .csv, .xls, .xlsx, .docx, .html
+              支持格式：.txt、.csv、.xls、.xlsx、.docx、.html、.md
             </p>
           </div>
           
           {uploadedFiles.length > 0 && (
             <div className="space-y-2">
-              <h3 className="font-medium">Selected Files:</h3>
+              <h3 className="font-medium">已选择文件：</h3>
               {uploadedFiles.map(file => (
                 <div key={file.id} className="flex items-center justify-between p-2 border rounded">
                   <div className="flex items-center gap-2">
@@ -312,7 +312,7 @@ export default function KnowledgeBaseUploadPage() {
                       <CheckCircle className="w-4 h-4 text-green-500" />
                     )}
                     {file.status === 'failed' && (
-                      <span className="text-red-500 text-sm">Failed</span>
+                      <span className="text-red-500 text-sm">失败</span>
                     )}
                   </div>
                 </div>
@@ -328,8 +328,8 @@ export default function KnowledgeBaseUploadPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Step 2: Chunking Configuration</CardTitle>
-          <CardDescription>Configure how your documents will be split into chunks for processing.</CardDescription>
+          <CardTitle>步骤 2：切分配置</CardTitle>
+          <CardDescription>配置文档的切分方式。</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <RadioGroup
@@ -343,14 +343,14 @@ export default function KnowledgeBaseUploadPage() {
             <div className="flex items-start space-x-3">
               <RadioGroupItem value="paragraph" id="paragraph" />
               <div className="space-y-2">
-                <Label htmlFor="paragraph" className="font-medium">Paragraph-based Chunking</Label>
+                <Label htmlFor="paragraph" className="font-medium">按段落切分</Label>
                 <p className="text-sm text-muted-foreground">
-                  Split by markdown headings and paragraphs. Long paragraphs are further split by size.
+                  按标题和段落拆分，超长段落会按长度继续拆分。
                 </p>
                 {chunkingConfig.type === 'paragraph' && (
                   <div className="grid grid-cols-2 gap-4 mt-2 p-4 bg-muted rounded">
                     <div>
-                      <Label htmlFor="maxHeadingDepth">Max Heading Depth</Label>
+                      <Label htmlFor="maxHeadingDepth">最大标题层级</Label>
                       <Input
                         id="maxHeadingDepth"
                         type="number"
@@ -364,7 +364,7 @@ export default function KnowledgeBaseUploadPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="maxChunkSize">Max Chunk Size</Label>
+                      <Label htmlFor="maxChunkSize">最大块大小</Label>
                       <Input
                         id="maxChunkSize"
                         type="number"
@@ -376,7 +376,7 @@ export default function KnowledgeBaseUploadPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="indexSize">Index Size</Label>
+                      <Label htmlFor="indexSize">索引切分大小</Label>
                       <Input
                         id="indexSize"
                         type="number"
@@ -396,14 +396,14 @@ export default function KnowledgeBaseUploadPage() {
             <div className="flex items-start space-x-3">
               <RadioGroupItem value="length" id="length" />
               <div className="space-y-2">
-                <Label htmlFor="length" className="font-medium">Length-based Chunking</Label>
+                <Label htmlFor="length" className="font-medium">按长度切分</Label>
                 <p className="text-sm text-muted-foreground">
-                  Split documents into fixed-size chunks.
+                  固定长度分块。
                 </p>
                 {chunkingConfig.type === 'length' && (
                   <div className="grid grid-cols-2 gap-4 mt-2 p-4 bg-muted rounded">
                     <div>
-                      <Label htmlFor="chunkSize">Chunk Size</Label>
+                      <Label htmlFor="chunkSize">块大小</Label>
                       <Input
                         id="chunkSize"
                         type="number"
@@ -415,7 +415,7 @@ export default function KnowledgeBaseUploadPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="indexSizeLength">Index Size</Label>
+                      <Label htmlFor="indexSizeLength">索引切分大小</Label>
                       <Input
                         id="indexSizeLength"
                         type="number"
@@ -435,14 +435,14 @@ export default function KnowledgeBaseUploadPage() {
             <div className="flex items-start space-x-3">
               <RadioGroupItem value="custom" id="custom" />
               <div className="space-y-2">
-                <Label htmlFor="custom" className="font-medium">Custom Separator Chunking</Label>
+                <Label htmlFor="custom" className="font-medium">自定义分隔符</Label>
                 <p className="text-sm text-muted-foreground">
-                  Split documents using a custom separator.
+                  按自定义分隔符切分。
                 </p>
                 {chunkingConfig.type === 'custom' && (
                   <div className="grid grid-cols-2 gap-4 mt-2 p-4 bg-muted rounded">
                     <div className="col-span-2">
-                      <Label htmlFor="customSeparator">Custom Separator</Label>
+                      <Label htmlFor="customSeparator">自定义分隔符</Label>
                       <Input
                         id="customSeparator"
                         value={chunkingConfig.customSeparator}
@@ -450,11 +450,11 @@ export default function KnowledgeBaseUploadPage() {
                           ...prev, 
                           customSeparator: e.target.value 
                         }))}
-                        placeholder="\n\n or --- or custom text"
+                        placeholder="如 \\n\\n 或 --- 等自定义符号"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="indexSizeCustom">Index Size</Label>
+                      <Label htmlFor="indexSizeCustom">索引切分大小</Label>
                       <Input
                         id="indexSizeCustom"
                         type="number"
@@ -479,14 +479,14 @@ export default function KnowledgeBaseUploadPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Step 3: Data Preview</CardTitle>
-          <CardDescription>Preview your uploaded files and see how they will be chunked.</CardDescription>
+          <CardTitle>步骤 3：数据预览</CardTitle>
+          <CardDescription>预览已上传文件及切分效果。</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* File list */}
             <div className="lg:col-span-1">
-              <h3 className="font-medium mb-2">Uploaded Files</h3>
+              <h3 className="font-medium mb-2">已上传文件</h3>
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {uploadedFiles.filter(f => f.status === 'uploaded').map(file => (
                   <Button
@@ -525,7 +525,7 @@ export default function KnowledgeBaseUploadPage() {
                 </div>
               ) : (
                 <div className="border rounded p-8 text-center text-muted-foreground h-96 flex items-center justify-center">
-                  Select a file to preview
+                  请选择左侧文件进行预览
                 </div>
               )}
             </div>
@@ -539,45 +539,45 @@ export default function KnowledgeBaseUploadPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Step 4: Confirm Upload</CardTitle>
-          <CardDescription>Review your files and confirm the upload to your knowledge base.</CardDescription>
+          <CardTitle>步骤 4：确认上传</CardTitle>
+          <CardDescription>检查文件与切分配置后提交。</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <h3 className="font-medium">Files to Upload:</h3>
+            <h3 className="font-medium">待上传文件：</h3>
             {uploadedFiles.filter(f => f.status === 'uploaded').map(file => (
               <div key={file.id} className="flex items-center justify-between p-3 border rounded">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4" />
                   <span>{file.file.name}</span>
                 </div>
-                <span className="text-sm text-green-600">Ready</span>
+                <span className="text-sm text-green-600">已就绪</span>
               </div>
             ))}
             
             <div className="p-4 bg-muted rounded">
-              <h4 className="font-medium mb-2">Chunking Configuration:</h4>
+              <h4 className="font-medium mb-2">切分配置：</h4>
               <div className="text-sm">
                 {chunkingConfig.type === 'paragraph' && (
                   <>
-                    <div>Type: Paragraph-based</div>
-                    <div>Max Heading Depth: {chunkingConfig.maxHeadingDepth}</div>
-                    <div>Max Chunk Size: {chunkingConfig.maxChunkSize}</div>
-                    <div>Index Size: {chunkingConfig.indexSize}</div>
+                    <div>方式：按段落</div>
+                    <div>最大标题层级：{chunkingConfig.maxHeadingDepth}</div>
+                    <div>最大块大小：{chunkingConfig.maxChunkSize}</div>
+                    <div>索引切分大小：{chunkingConfig.indexSize}</div>
                   </>
                 )}
                 {chunkingConfig.type === 'length' && (
                   <>
-                    <div>Type: Length-based</div>
-                    <div>Chunk Size: {chunkingConfig.chunkSize}</div>
-                    <div>Index Size: {chunkingConfig.indexSize}</div>
+                    <div>方式：按长度</div>
+                    <div>块大小：{chunkingConfig.chunkSize}</div>
+                    <div>索引切分大小：{chunkingConfig.indexSize}</div>
                   </>
                 )}
                 {chunkingConfig.type === 'custom' && (
                   <>
-                    <div>Type: Custom Separator</div>
-                    <div>Separator: "{chunkingConfig.customSeparator}"</div>
-                    <div>Index Size: {chunkingConfig.indexSize}</div>
+                    <div>方式：自定义分隔符</div>
+                    <div>分隔符: "{chunkingConfig.customSeparator}"</div>
+                    <div>索引切分大小：{chunkingConfig.indexSize}</div>
                   </>
                 )}
               </div>
@@ -591,10 +591,10 @@ export default function KnowledgeBaseUploadPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Upload Documents</h1>
+        <h1 className="text-2xl font-bold">知识库上传向导</h1>
         <Button variant="ghost" onClick={() => router.back()}>
           <ChevronLeft className="w-4 h-4 mr-2" />
-          Back
+          返回
         </Button>
       </div>
 
@@ -626,7 +626,7 @@ export default function KnowledgeBaseUploadPage() {
           disabled={currentStep === 1}
         >
           <ChevronLeft className="w-4 h-4 mr-2" />
-          Previous
+          上一步
         </Button>
         <Button
           onClick={currentStep === 4 ? confirmUpload : nextStep}
@@ -635,7 +635,7 @@ export default function KnowledgeBaseUploadPage() {
             (currentStep === 4 && uploadedFiles.filter(f => f.status === 'uploaded').length === 0)
           }
         >
-          {currentStep === 4 ? 'Confirm Upload' : 'Next'}
+          {currentStep === 4 ? '确认上传' : '下一步'}
           {currentStep !== 4 && <ChevronRight className="w-4 h-4 ml-2" />}
         </Button>
       </CardFooter>

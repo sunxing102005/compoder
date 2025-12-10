@@ -86,12 +86,12 @@ export const ComponentDetailContainer = () => {
       <AppHeader
         showSidebarTrigger={false}
         breadcrumbs={[
-          { label: "Codegen", href: "/main/codegen" },
+          { label: "组件生成器", href: "/main/codegen" },
           {
-            label: "Codegen Detail",
+            label: "生成详情",
             href: `/main/codegen/${codegenId}`,
           },
-          { label: componentDetail?.name || "Component Detail" },
+          { label: componentDetail?.name || "组件详情" },
         ]}
       />
       <div className="h-[calc(100%-200px)]">

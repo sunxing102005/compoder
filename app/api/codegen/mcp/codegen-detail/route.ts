@@ -8,6 +8,8 @@ interface CodegenDetailResponse {
   fullStack: string
   guides: string[]
   codeRendererUrl: string
+  knowledgeBaseId?: string
+  knowledgeBaseName?: string
   rules: Array<{
     type: string
     description: string
@@ -39,7 +41,11 @@ export async function GET(req: NextRequest) {
       fullStack: codegen.fullStack,
       guides: codegen.guides,
       codeRendererUrl: codegen.codeRendererUrl,
-      rules: codegen.rules,
+      knowledgeBaseId: codegen.knowledgeBaseId
+        ? String(codegen.knowledgeBaseId)
+        : undefined,
+      knowledgeBaseName: codegen.knowledgeBaseName,
+      rules: codegen.rules || [],
     }
 
     return NextResponse.json(response)
@@ -53,4 +59,3 @@ export async function GET(req: NextRequest) {
 }
 
 export const dynamic = "force-dynamic"
-

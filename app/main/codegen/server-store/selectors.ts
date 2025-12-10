@@ -47,6 +47,10 @@ export const useGetCodegenList = (
           title: item.title,
           description: item.description,
           fullStack: item.fullStack,
+          knowledgeBaseId: item.knowledgeBaseId
+            ? String(item.knowledgeBaseId)
+            : "",
+          knowledgeBaseName: item.knowledgeBaseName || "",
         })),
       ),
       total: data.pages[0]?.total ?? 0,
@@ -62,9 +66,11 @@ export const useCodegenDetail = (id: string) => {
       name: string
       prompts: Array<{
         title: string
-        onClick: () => void
+      onClick: () => void
       }>
       codeRendererUrl: string
+      knowledgeBaseId?: string
+      knowledgeBaseName?: string
     }
   >({
     queryKey: ["codegen-detail", id],
@@ -76,6 +82,10 @@ export const useCodegenDetail = (id: string) => {
         onClick: () => console.log(`Clicked prompt: ${prompt}`),
       })),
       codeRendererUrl: data.data.codeRendererUrl,
+      knowledgeBaseId: data.data.knowledgeBaseId
+        ? String(data.data.knowledgeBaseId)
+        : undefined,
+      knowledgeBaseName: data.data.knowledgeBaseName,
     }),
   })
 }
