@@ -30,6 +30,7 @@ const buildSystemPrompt = (): string => {
     6. 输出只允许为 JSON，结构如下：
         {
         "componentName": "XXX", // 业务组件名（如 OrderSubmitBar ）
+        "componentDescription": "xxxx", // 用于简单描述组件功能，只在最外层有该字段
         "props": {},
         "children": [
             {
@@ -186,12 +187,10 @@ export async function generateComponentTreeDSL(
     .join("\n")
 
   const figmaData = context.state.figmaData
-  // 调试：检查knowledgeBaseId
+
   console.log("generateComponentTreeDSL - knowledgeBaseId:", context.query.knowledgeBaseId)
-  console.log("generateComponentTreeDSL - figmaData available:", !!figmaData)
-  console.log("generateComponentTreeDSL - userText:", userText.substring(0, 100))
   
-  // 获取业务组件文档（可能来自知识库）
+  // 获取业务组件文档
   const businessComponentDocs = await getBusinessComponentDocs(
     context.query.knowledgeBaseId,
     figmaData,
@@ -230,7 +229,7 @@ export async function generateComponentTreeDSL(
     }
 
     const dsl = parseComponentTreeDSL(accumulatedResponse)
-    // console.log("generated component tree DSL:", dsl)
+    console.log("generated component tree DSL:", dsl)
     
     return dsl
   } catch (err: unknown) {

@@ -159,7 +159,7 @@ export async function updateComponentCodeFromInput(
       )
     }
 
-    console.log("generated updated component code:", accumulatedCode + "...")
+    // console.log("generated updated component code:", accumulatedCode + "...")
     
     return accumulatedCode
   } catch (err: unknown) {
