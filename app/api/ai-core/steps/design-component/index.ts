@@ -10,7 +10,7 @@ export const designComponent = async (
   context.stream.write("start design component \n")
 
   const componentDesign = await generateComponentDesign(context)
-
+//   console.log("componentDesign", componentDesign);
   context.stream.write("design component end \n\n")
 
   return {

@@ -62,6 +62,7 @@ async function fetchFigmaSemanticNodes(
     const baseUrl =
       fetchFigmaNodesUrl ||
       "http://localhost:3100/figma/semantic-nodes"
+    //   console.log("baseUrl===>", baseUrl);
     const response = await fetch(
       `${baseUrl}?fileKey=${encodeURIComponent(fileKey)}&frameId=${encodeURIComponent(frameId)}`,
       {
@@ -79,6 +80,7 @@ async function fetchFigmaSemanticNodes(
     }
 
     const data = await response.json()
+    console.log("data", data.toString().slice(0,300));
     return data
   } catch (error) {
     console.error("Failed to fetch Figma semantic nodes:", error)

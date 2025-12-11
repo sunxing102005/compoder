@@ -10,6 +10,7 @@ interface CodegenDetailResponse {
   codeRendererUrl: string
   knowledgeBaseId?: string
   knowledgeBaseName?: string
+  pipelineType?: string
   rules: Array<{
     type: string
     description: string
@@ -45,6 +46,7 @@ export async function GET(req: NextRequest) {
         ? String(codegen.knowledgeBaseId)
         : undefined,
       knowledgeBaseName: codegen.knowledgeBaseName,
+      pipelineType: codegen.pipelineType,
       rules: codegen.rules || [],
     }
 

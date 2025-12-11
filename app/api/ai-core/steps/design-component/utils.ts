@@ -67,7 +67,7 @@ Please note: You should not provide example code and any other text in your resp
     : promptParts.withoutLibraries
 
   // build the workflow steps
-  const workflowSteps = `1. Accept user's business requirements or design draft images
+  const workflowSteps = `1. Accept user's business requirements or design draft images or figmaData
     ${parts.workflowStep2}
     3. Generate and return the XML response in the specified format`
 
@@ -257,7 +257,6 @@ export async function generateComponentDesign(
       parserCompletion.retrievedAugmentationContent =
         getRetrievedAugmentationContent(docs, parserCompletion.library)
     }
-    console.log("parserCompletion", parserCompletion)
     return parserCompletion
   } catch (err: unknown) {
     console.log("err", err)

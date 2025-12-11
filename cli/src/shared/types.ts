@@ -56,6 +56,7 @@ export interface CodegenDetailResponse {
   fullStack: string
   guides: string[]
   codeRendererUrl: string
+  pipelineType?: string
   fetchFigmaNodesUrl?: string
   genComFromDslSysPrompt?: string
   rules?: CodegenRule[]

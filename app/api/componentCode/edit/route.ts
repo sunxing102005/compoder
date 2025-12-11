@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
-import { run, updateComponentWorkflow } from "@/app/api/ai-core/workflow"
+import {
+  run,
+  updateComponentWorkflow,
+  designGenerateUpdateWorkflow,
+} from "@/app/api/ai-core/workflow"
 import { ComponentCodeApi } from "../type"
 import { findCodegenById } from "@/lib/db/codegen/selectors"
 import { getAIClient } from "@/app/api/ai-core/utils/aiClient"
@@ -40,7 +44,12 @@ export async function POST(request: NextRequest) {
 
     const kbId = params.knowledgeBaseId || codegenDetail.knowledgeBaseId
 
-    run(updateComponentWorkflow, {
+    const workflow =
+      (codegenDetail as any).pipelineType === "figma-design"
+        ? designGenerateUpdateWorkflow
+        : updateComponentWorkflow
+
+    run(workflow, {
       stream: {
         write: (chunk: string) => writer.write(encoder.encode(chunk)),
         close: () => writer.close(),

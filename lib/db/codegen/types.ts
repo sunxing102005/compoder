@@ -29,6 +29,7 @@ export interface Codegen {
   rules?: CodegenRule[]
   fetchFigmaNodesUrl?: string
   genComFromDslSysPrompt?: string
+  pipelineType?: string
   knowledgeBaseId?: string
   knowledgeBaseName?: string
 }

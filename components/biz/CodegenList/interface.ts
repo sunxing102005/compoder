@@ -5,6 +5,7 @@ interface JobItem {
   title: string
   description: string
   fullStack: StackType
+  pipelineType?: string
   knowledgeBaseId?: string
   knowledgeBaseName?: string
 }

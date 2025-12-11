@@ -47,6 +47,7 @@ export const useGetCodegenList = (
           title: item.title,
           description: item.description,
           fullStack: item.fullStack,
+          pipelineType: item.pipelineType,
           knowledgeBaseId: item.knowledgeBaseId
             ? String(item.knowledgeBaseId)
             : "",
@@ -66,9 +67,10 @@ export const useCodegenDetail = (id: string) => {
       name: string
       prompts: Array<{
         title: string
-      onClick: () => void
+        onClick: () => void
       }>
       codeRendererUrl: string
+      pipelineType?: string
       knowledgeBaseId?: string
       knowledgeBaseName?: string
     }
@@ -82,6 +84,7 @@ export const useCodegenDetail = (id: string) => {
         onClick: () => console.log(`Clicked prompt: ${prompt}`),
       })),
       codeRendererUrl: data.data.codeRendererUrl,
+      pipelineType: data.data.pipelineType,
       knowledgeBaseId: data.data.knowledgeBaseId
         ? String(data.data.knowledgeBaseId)
         : undefined,

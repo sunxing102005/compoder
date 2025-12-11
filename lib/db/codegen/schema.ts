@@ -81,6 +81,10 @@ const CodegenSchema = new mongoose.Schema<Codegen>(
       type: String,
       default: undefined,
     },
+    pipelineType: {
+      type: String,
+      default: "dsl",
+    },
     knowledgeBaseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "KnowledgeBase",

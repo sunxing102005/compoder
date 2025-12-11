@@ -146,7 +146,12 @@ export const buildCurrentComponentMessage = (
 export const buildUserMessage = (
   prompt: WorkflowContext["query"]["prompt"],
   design: NonNullable<WorkflowContext["state"]>["designTask"],
+  figmaData?: any,
 ): Array<CoreMessage> => {
+  const figmaSection = figmaData
+    ? `\n\n## 根据Figma 语义数据生成代码，保证代码与设计稿展示一致，语义数据如下：\n${JSON.stringify(figmaData, null, 2)}`
+    : ""
+
   return [
     {
       role: "user",
@@ -172,6 +177,7 @@ export const buildUserMessage = (
         `,
           )
           .join("\n")}
+        ${figmaSection}
         </user-requirements>`,
         }
       }),
@@ -189,6 +195,10 @@ export const generateComponentMessage = (
 
   return [
     ...buildCurrentComponentMessage(context.query.component),
-    ...buildUserMessage(context.query.prompt, context.state.designTask),
+    ...buildUserMessage(
+      context.query.prompt,
+      context.state.designTask,
+      "figmaData" in context.state ? context.state.figmaData : undefined,
+    ),
   ]
 }
