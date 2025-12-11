@@ -33,8 +33,15 @@ export const ComponentDetailContainer = () => {
     handleSave,
     artifact,
     codegenId,
+    componentId,
     modelConfig,
   } = useComponentDetail()
+  const [ideControls, setIdeControls] = useState<{
+    onSave: () => Promise<void>
+    onReset: () => void
+    dirty: boolean
+    isSaving: boolean
+  } | null>(null)
 
   const supportVision = modelConfig?.features.includes("vision")
 
@@ -97,6 +104,16 @@ export const ComponentDetailContainer = () => {
       <div className="h-[calc(100%-200px)]">
         <ComponentCodeVersionsContainer
           disabled={isStreaming}
+          controls={
+            ideControls
+              ? {
+                  onSave: ideControls.onSave,
+                  onReset: ideControls.onReset,
+                  dirty: ideControls.dirty,
+                  isSaving: ideControls.isSaving,
+                }
+              : undefined
+          }
           versions={
             componentDetail?.versions.map(version => ({
               id: version._id.toString(),
@@ -115,6 +132,7 @@ export const ComponentDetailContainer = () => {
               }}
               readOnly={isStreaming}
               data={artifact.files}
+              onControlsChange={controls => setIdeControls(controls)}
               onSave={async (files: FileNode[]) => {
                 await handleSave(files)
               }}

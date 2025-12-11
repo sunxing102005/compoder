@@ -16,6 +16,7 @@ declare namespace CodegenApi {
       | "title"
       | "description"
       | "fullStack"
+      | "pipelineType"
       | "knowledgeBaseId"
       | "knowledgeBaseName"
     >[]
@@ -35,6 +36,7 @@ declare namespace CodegenApi {
       | "fullStack"
       | "guides"
       | "codeRendererUrl"
+      | "pipelineType"
       | "knowledgeBaseId"
       | "knowledgeBaseName"
       | "fetchFigmaNodesUrl"

@@ -85,7 +85,12 @@ function getFilePath(
 }
 
 // Internal component that uses the sidebar context
-function CodeIDEContent({ readOnly, onSave, codeRenderer }: CodeIDEProps) {
+function CodeIDEContent({
+  readOnly,
+  onSave,
+  codeRenderer,
+  onControlsChange,
+}: CodeIDEProps) {
   const { resolvedTheme } = useTheme()
   const {
     currentFile,
@@ -98,7 +103,6 @@ function CodeIDEContent({ readOnly, onSave, codeRenderer }: CodeIDEProps) {
     unsavedFiles,
     files,
   } = useFile()
-  const [showToast, setShowToast] = useState(false)
   const editorContainerRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<any>(null)
   const [isSaving, setIsSaving] = useState(false)
@@ -157,14 +161,6 @@ function CodeIDEContent({ readOnly, onSave, codeRenderer }: CodeIDEProps) {
     handleEditorScrollMount()
   }
 
-  // Show/hide toast when unsaved changes exist
-  useEffect(() => {
-    if (unsavedFiles.size > 0) {
-      setShowToast(true)
-    } else {
-      setShowToast(false)
-    }
-  }, [unsavedFiles.size])
 
   // Handle saving changes
   const handleSave = async () => {
@@ -178,6 +174,16 @@ function CodeIDEContent({ readOnly, onSave, codeRenderer }: CodeIDEProps) {
       setIsSaving(false)
     }
   }
+  useEffect(() => {
+    if (!onControlsChange) return
+    onControlsChange({
+      onSave: handleSave,
+      onReset: resetChanges,
+      dirty: unsavedFiles.size > 0,
+      isSaving,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unsavedFiles.size, isSaving])
 
   const handleEditorWillMount = (monaco: Monaco) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -284,12 +290,6 @@ function CodeIDEContent({ readOnly, onSave, codeRenderer }: CodeIDEProps) {
                 Select a file to view its content
               </div>
             )}
-            <EditorToast
-              visible={showToast}
-              onReset={resetChanges}
-              onSave={handleSave}
-              isSaving={isSaving}
-            />
           </div>
         </div>
       </ResizablePanel>

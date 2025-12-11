@@ -11,6 +11,7 @@ import { MessageCircleMore } from "lucide-react"
 import { Prompt } from "@/lib/db/componentCode/types"
 import { ImagePreview } from "@/components/biz/ImagePreview"
 import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
 
 const ComponentCodeVersionsContainer = ({
   versions,
@@ -18,6 +19,7 @@ const ComponentCodeVersionsContainer = ({
   onVersionChange,
   children,
   disabled = false,
+  controls,
 }: ComponentCodeVersionsContainerProps) => {
   const [hoveredVersion, setHoveredVersion] = useState<number | null>(null)
   const dotsContainerRef = useRef<HTMLDivElement>(null)
@@ -138,18 +140,40 @@ const ComponentCodeVersionsContainer = ({
             </svg>
           </div>
 
-          <p className="w-fit flex items-center gap-2 py-2 px-4 rounded-lg bg-gray-50 dark:bg-gray-800 mb-4">
-            <MessageCircleMore className="w-5 h-5" />
-            <Separator
-              orientation="vertical"
-              className="h-5 bg-gray-300 dark:bg-gray-600 mr-1"
-            />
-            <div className="flex items-center gap-2 h-8">
-              {activeVersionData?.prompt.map((prompt, index) => (
-                <div key={index}>{renderPrompt(prompt)}</div>
-              ))}
-            </div>
-          </p>
+          <div className="flex items-center justify-between mb-4 gap-3">
+            <p className="w-fit flex items-center gap-2 py-2 px-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+              <MessageCircleMore className="w-5 h-5" />
+              <Separator
+                orientation="vertical"
+                className="h-5 bg-gray-300 dark:bg-gray-600 mr-1"
+              />
+              <div className="flex items-center gap-2 h-8">
+                {activeVersionData?.prompt.map((prompt, index) => (
+                  <div key={index}>{renderPrompt(prompt)}</div>
+                ))}
+              </div>
+            </p>
+
+            {controls && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!controls.dirty || controls.isSaving}
+                  onClick={() => !controls.isSaving && controls.onReset()}
+                >
+                  重置
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={!controls.dirty || controls.isSaving}
+                  onClick={() => controls.onSave()}
+                >
+                  保存
+                </Button>
+              </div>
+            )}
+          </div>
 
           {children}
         </div>

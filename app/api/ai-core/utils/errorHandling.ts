@@ -6,6 +6,6 @@ export const withErrorHandling =
     try {
       return await fn(context)
     } catch (error) {
-      throw `<TryCatchError>${fn.name} failed: ${error}</TryCatchError>\n`
+      throw `<TryCatchError>${fn.name} failed: ${JSON.stringify(error)}</TryCatchError>\n`
     }
   }

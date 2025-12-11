@@ -14,4 +14,10 @@ export interface ComponentCodeVersionsContainerProps {
   children: React.ReactNode
   /** Whether the component is disabled */
   disabled?: boolean
+  controls?: {
+    onSave: () => void | Promise<void>
+    onReset: () => void
+    dirty: boolean
+    isSaving?: boolean
+  }
 }

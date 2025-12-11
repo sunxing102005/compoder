@@ -34,6 +34,12 @@ export interface CodeIDEProps {
   readOnly?: boolean
   onSave: (files: FileNode[]) => Promise<void> | void
   codeRenderer?: React.ReactNode
+  onControlsChange?: (controls: {
+    onSave: () => Promise<void>
+    onReset: () => void
+    dirty: boolean
+    isSaving: boolean
+  }) => void
 }
 
 export type StreamCodeIDEProps = CodeIDEProps & {

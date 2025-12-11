@@ -22,7 +22,7 @@ export function FileTree({
   variant = "sidebar",
   defaultOpen,
 }: FileTreeProps) {
-  const { currentFile } = useFile()
+  const { currentFile, unsavedFiles } = useFile()
   const hasChildren = item.children && item.children.length > 0
   const [isOpen, setIsOpen] = React.useState(defaultOpen)
 
@@ -55,7 +55,14 @@ export function FileTree({
           onClick={() => onFileClick(item)}
         >
           <File className="h-4 w-4 shrink-0" />
-          <span className="truncate">{item.name}</span>
+          <span
+            className={cn(
+              "truncate",
+              unsavedFiles.has(item.id) && "text-blue-500",
+            )}
+          >
+            {item.name}
+          </span>
         </button>
       )
     }
@@ -69,7 +76,14 @@ export function FileTree({
         onClick={() => onFileClick(item)}
       >
         <File className="h-4 w-4 shrink-0" />
-        <span className="truncate">{item.name}</span>
+        <span
+          className={cn(
+            "truncate",
+            unsavedFiles.has(item.id) && "text-blue-500",
+          )}
+        >
+          {item.name}
+        </span>
       </button>
     )
   }
