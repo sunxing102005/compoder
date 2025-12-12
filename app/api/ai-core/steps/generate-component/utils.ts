@@ -106,6 +106,9 @@ export const buildSystemPrompt = (
 
     ## Goal
     Generate business component code based on user requirements
+    - 输出必须使用 <ComponentArtifact name="YourComponentName" description="用中文简要概括组件用途"> 包裹所有文件内容
+    - description 需要结合用户需求或 Figma 数据自行总结，不要照搬用户输入
+    - 组件代码通过 <ComponentFile fileName="xxx" isEntryFile="true|false">...</ComponentFile> 嵌入 ComponentArtifact
     ${outputSpecification}
     ${styleSpecification}
     ${componentGuidelines}
@@ -145,9 +148,12 @@ export const buildCurrentComponentMessage = (
 // build user prompt
 export const buildUserMessage = (
   prompt: WorkflowContext["query"]["prompt"],
-  design: NonNullable<WorkflowContext["state"]>["designTask"],
+  design: NonNullable<WorkflowContext["state"]>["designTask"] | undefined,
+  rules?: WorkflowContext["query"]["rules"],
   figmaData?: any,
 ): Array<CoreMessage> => {
+  const fallbackLibrary = getPublicComponentsRule(rules || [])
+
   const figmaSection = figmaData
     ? `\n\n## 根据Figma 语义数据生成代码，保证代码与设计稿展示一致，语义数据如下：\n${JSON.stringify(figmaData, null, 2)}`
     : ""
@@ -164,19 +170,26 @@ export const buildUserMessage = (
           text: `<user-requirements>
         ${p.text}
 
+        - 请结合需求/设计数据自行总结组件的中文名称和简介，并写入 ComponentArtifact 的 name、description 属性
         ## Component Design Information
-        - Component Name: ${design?.componentName}
-        - Component Description: ${design?.componentDescription}
+        - Component Name: ${design?.componentName || "未指定"}
+        - Component Description: ${design?.componentDescription || "未提供"}
         - Base Components Used:
-        ${design?.library
-          ?.map(
-            lib => `
+        ${
+          design?.library && design.library.length > 0
+            ? design.library
+                .map(
+                  lib => `
           ${lib.name}:
           - Component List: ${lib.components.join(", ")}
           - Usage Instructions: ${lib.description}
         `,
-          )
-          .join("\n")}
+                )
+                .join("\n")
+            : fallbackLibrary && Array.isArray(fallbackLibrary)
+              ? fallbackLibrary.join(", ")
+              : "遵循可用的开源组件库"
+        }
         ${figmaSection}
         </user-requirements>`,
         }
@@ -189,15 +202,12 @@ export const buildUserMessage = (
 export const generateComponentMessage = (
   context: WorkflowContext,
 ): Array<CoreMessage> => {
-  if (!context.state?.designTask) {
-    throw new Error("Design task is required but not found in context")
-  }
-
   return [
     ...buildCurrentComponentMessage(context.query.component),
     ...buildUserMessage(
       context.query.prompt,
-      context.state.designTask,
+      context.state?.designTask,
+      context.query.rules,
       "figmaData" in context.state ? context.state.figmaData : undefined,
     ),
   ]

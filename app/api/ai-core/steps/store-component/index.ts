@@ -36,9 +36,14 @@ function mergeComponentFiles(originalXml: string, newXml: string): string {
   })
 
   // 构建合并后的XML
-  let mergedXml = `<ComponentArtifact name="${
-    newComponent.componentName || originalComponent.componentName
-  }">`
+  const mergedName =
+    newComponent.componentName || originalComponent.componentName || ""
+  const mergedDescription =
+    newComponent.componentDescription || originalComponent.componentDescription
+
+  let mergedXml = `<ComponentArtifact name="${mergedName}"${
+    mergedDescription ? ` description="${mergedDescription}"` : ""
+  }>`
 
   // 添加所有文件
   fileMap.forEach((file, fileName) => {
@@ -65,10 +70,21 @@ export const updateComponent = async (
   // 合并组件文件
   const mergedCode = mergeComponentFiles(originalCode, newCode)
 
+  const newArtifact = transformComponentArtifactFromXml(newCode)
+  const mergedArtifact = transformComponentArtifactFromXml(mergedCode)
+  const nextName =
+    newArtifact?.componentName ||
+    mergedArtifact?.componentName ||
+    context.query.component.name
+  const nextDescription =
+    newArtifact?.componentDescription || mergedArtifact?.componentDescription
+
   await updateComponentCodeVersion({
     id: context.query.component.id,
     prompt: context.query.prompt,
     code: mergedCode,
+    name: nextName,
+    description: nextDescription,
   })
 
   context.stream.close()
@@ -100,6 +116,28 @@ export const initComponent = async (
     // 向后兼容：从 designTask 中获取
     componentName = context.state.designTask.componentName
     componentDescription = context.state.designTask.componentDescription
+  } else if (context.state.generatedCode) {
+    // 兜底：从生成的 XML 代码中提取组件名
+    const artifact = transformComponentArtifactFromXml(context.state.generatedCode)
+    if (artifact?.componentName) {
+      componentName = artifact.componentName
+    }
+    if (artifact?.componentDescription) {
+      componentDescription = artifact.componentDescription
+    }
+  }
+
+  // 进一步兜底：尽量避免直接复用用户输入的描述
+  if (!componentDescription) {
+    if ("figmaData" in context.state && context.state.figmaData) {
+      componentDescription = "基于 Figma 设计生成的组件"
+    } else {
+      const userText = context.query.prompt
+        .map(p => (p.type === "text" ? p.text : ""))
+        .filter(Boolean)
+        .join("\n")
+      componentDescription = userText || "Generated component"
+    }
   }
 
   await initComponentCode({

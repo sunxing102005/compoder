@@ -48,7 +48,6 @@ export const designGenerateInitWorkflow = pipe<
   WorkflowContext
 >(
   withErrorHandling(extractFigmaData),
-  withErrorHandling(designComponent),
   withErrorHandling(generateComponent),
   withErrorHandling(initComponent),
 )

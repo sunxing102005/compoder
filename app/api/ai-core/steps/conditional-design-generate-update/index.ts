@@ -1,4 +1,3 @@
-import { designComponent } from "../design-component"
 import { generateComponent } from "../generate-component"
 import { updateComponent } from "../store-component"
 import { updateComponentCode } from "../update-component-code"
@@ -23,9 +22,12 @@ export const conditionalDesignGenerateUpdate = async (
 ): Promise<GenerateProcessingWorkflowContext> => {
   // 有 figmaData 字段时走设计+生成路径
   if ("figmaData" in context.state) {
-    const designCtx = await designComponent(context as FigmaDataWorkflowContext)
-    const genCtx = await generateComponent(designCtx)
-    const updated = await updateComponent(genCtx)
+    const genCtx = await generateComponent(
+      context as FigmaDataWorkflowContext as any,
+    )
+    const updated = await updateComponent(
+      genCtx as GenerateProcessingWorkflowContext,
+    )
     return updated
   }
 

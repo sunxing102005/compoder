@@ -4,6 +4,7 @@ import { StreamParser } from "./stream-parser"
 
 export interface Artifact {
   componentName: string | null
+  componentDescription?: string | null
   files: FileNode[]
   codes: Codes
   entryFile?: string
@@ -45,6 +46,7 @@ export const parseStreamingArtifact = ({
     if (name === "ComponentArtifact") {
       currentArtifact = {
         componentName: attrs.name as string | null,
+        componentDescription: (attrs.description as string | undefined) || null,
         files: [],
         codes: {},
         entryFile: "",

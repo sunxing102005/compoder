@@ -85,15 +85,26 @@ export async function updateComponentCodeVersion({
   id,
   prompt,
   code,
+  name,
+  description,
 }: {
   id: string
   prompt: Prompt[]
   code: string
+  name?: string
+  description?: string
 }) {
   try {
     const componentCode = await ComponentCodeModel.findById(id)
     if (!componentCode) {
       throw new Error("Component code not found")
+    }
+
+    if (name && componentCode.name !== name) {
+      componentCode.name = name
+    }
+    if (description && componentCode.description !== description) {
+      componentCode.description = description
     }
     componentCode.versions.push({ prompt, code })
     await componentCode.save()

@@ -4,8 +4,20 @@ import { Artifact } from "./artifact-stream-parser"
 // Parse ComponentArtifact XML string, return component name and component file list
 export function transformComponentArtifactFromXml(xmlString: string): Artifact {
   try {
-    const nameMatch = xmlString.match(/<ComponentArtifact\s+name="([^"]+)">/)
+    const nameMatch = xmlString.match(
+      /<ComponentArtifact[^>]*\sname="([^"]+)"/,
+    )
     const componentName = nameMatch ? nameMatch[1] : null
+    const descriptionAttrMatch = xmlString.match(
+      /<ComponentArtifact[^>]*\sdescription="([^"]+)"/,
+    )
+    const descriptionNodeMatch = xmlString.match(
+      /<ComponentDescription>([\s\S]*?)<\/ComponentDescription>/,
+    )
+    const componentDescription =
+      (descriptionAttrMatch && descriptionAttrMatch[1]) ||
+      (descriptionNodeMatch && descriptionNodeMatch[1].trim()) ||
+      null
 
     // Parse ComponentFile tags
     const componentFiles = []
@@ -30,6 +42,7 @@ export function transformComponentArtifactFromXml(xmlString: string): Artifact {
 
     return {
       componentName,
+      componentDescription,
       entryFile: componentFiles.find(file => file.isEntryFile)?.fileName,
       files: fileNodes,
       codes: getCodesFromFileNodes(fileNodes),

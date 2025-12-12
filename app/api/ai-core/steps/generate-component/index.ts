@@ -3,10 +3,14 @@ import { buildSystemPrompt, generateComponentMessage } from "./utils"
 import {
   DesignProcessingWorkflowContext,
   GenerateProcessingWorkflowContext,
+  FigmaDataWorkflowContext,
 } from "../../type"
 
 export const generateComponent = async (
-  context: DesignProcessingWorkflowContext,
+  context:
+    | DesignProcessingWorkflowContext
+    | FigmaDataWorkflowContext
+    | GenerateProcessingWorkflowContext,
 ): Promise<GenerateProcessingWorkflowContext> => {
   context.stream.write("start call codegen-ai \n")
 

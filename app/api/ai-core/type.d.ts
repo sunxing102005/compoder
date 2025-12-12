@@ -83,7 +83,7 @@ export type DesignProcessingWorkflowContext = {
   query: WorkflowQuery
   state: {
     figmaData?: FigmaSemanticNode | null
-    designTask: {
+    designTask?: {
       componentName: string
       componentDescription: string
       library: Array<{
