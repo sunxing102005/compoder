@@ -42,7 +42,7 @@ export function CodegenFilterContainer({
   return (
     <div className={cn("space-y-6", className)}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <Tabs
+        {/* <Tabs
           value={selectedStack}
           onValueChange={value => onStackChange?.(value as StackType)}
           className="w-full sm:w-auto"
@@ -58,7 +58,7 @@ export function CodegenFilterContainer({
               Vue
             </TabsTrigger>
           </TabsList>
-        </Tabs>
+        </Tabs> */}
 
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />

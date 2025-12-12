@@ -55,6 +55,7 @@ function CodegenCard({
   const [kbId, setKbId] = useState(item.knowledgeBaseId || "")
   const [kbName, setKbName] = useState(item.knowledgeBaseName || "")
   const updateKb = useUpdateCodegenKnowledgeBase()
+  const hideKnowledgeBase = item.pipelineType === "figma-design"
 
   const handleSave = async () => {
     if (!kbId) {
@@ -116,52 +117,54 @@ function CodegenCard({
           </Tooltip>
         </TooltipProvider>
 
-        <div className="flex items-center justify-between border-t pt-3">
-          <div className="text-sm">
-            <p className="font-medium">知识库</p>
-            <p className="text-muted-foreground">
-              {kbName || "未关联"}
-            </p>
-          </div>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button
-                size="sm"
-                variant="outline"
+        {!hideKnowledgeBase && (
+          <div className="flex items-center justify-between border-t pt-3">
+            <div className="text-sm">
+              <p className="font-medium">知识库</p>
+              <p className="text-muted-foreground">
+                {kbName || "未关联"}
+              </p>
+            </div>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {kbName ? "编辑" : "关联"}
+                </Button>
+              </DialogTrigger>
+              <DialogContent
                 onClick={e => e.stopPropagation()}
+                className="sm:max-w-[480px]"
               >
-                {kbName ? "编辑" : "关联"}
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              onClick={e => e.stopPropagation()}
-              className="sm:max-w-[480px]"
-            >
-              <DialogHeader>
-                <DialogTitle>选择知识库</DialogTitle>
-              </DialogHeader>
-              <div className="pt-2 space-y-4">
-                <KnowledgeBaseSelector
-                  value={kbId}
-                  onChange={setKbId}
-                  onSelect={({ name }) => setKbName(name)}
-                />
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setOpen(false)}
-                    disabled={updateKb.isPending}
-                  >
-                    取消
-                  </Button>
-                  <Button onClick={handleSave} disabled={updateKb.isPending}>
-                    保存
-                  </Button>
+                <DialogHeader>
+                  <DialogTitle>选择知识库</DialogTitle>
+                </DialogHeader>
+                <div className="pt-2 space-y-4">
+                  <KnowledgeBaseSelector
+                    value={kbId}
+                    onChange={setKbId}
+                    onSelect={({ name }) => setKbName(name)}
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setOpen(false)}
+                      disabled={updateKb.isPending}
+                    >
+                      取消
+                    </Button>
+                    <Button onClick={handleSave} disabled={updateKb.isPending}>
+                      保存
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
       </div>
     </Card>
   )

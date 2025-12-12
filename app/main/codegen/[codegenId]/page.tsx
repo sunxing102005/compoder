@@ -73,6 +73,7 @@ export default function CodegenDetailPage({
   const supportVision = modelConfig?.features.includes("vision")
   const initComponentMutation = useCreateComponentCode()
   const deleteComponentMutation = useDeleteComponentCode()
+  const hideKnowledgeBase = codegenDetail?.pipelineType === "figma-design"
 
   const shouldShowList = useShowOnFirstData(componentCodeData?.items)
   useEffect(() => {
@@ -186,17 +187,19 @@ export default function CodegenDetailPage({
                 />
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <KnowledgeBaseSelector 
-                      value={knowledgeBaseId} 
-                      onChange={setKnowledgeBaseId} 
-                    />
-                    {codegenDetail?.knowledgeBaseName && (
-                      <p className="text-sm text-muted-foreground">
-                        默认关联：{codegenDetail.knowledgeBaseName}
-                      </p>
-                    )}
-                  </div>
+                  {!hideKnowledgeBase && (
+                    <div className="flex items-center justify-between">
+                      <KnowledgeBaseSelector 
+                        value={knowledgeBaseId} 
+                        onChange={setKnowledgeBaseId} 
+                      />
+                      {codegenDetail?.knowledgeBaseName && (
+                        <p className="text-sm text-muted-foreground">
+                          默认关联：{codegenDetail.knowledgeBaseName}
+                        </p>
+                      )}
+                    </div>
+                  )}
                   <ChatInput
                     className="mt-2"
                     value={chatValue}
