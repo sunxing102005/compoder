@@ -53,13 +53,13 @@ export async function POST(request: NextRequest) {
         rules: codegenDetail.rules,
         userId: userId!,
         codegenId: body.codegenId,
-        knowledgeBaseId: kbId ? String(kbId) : undefined,
-        knowledgeBaseName: codegenDetail.knowledgeBaseName,
-        fetchFigmaNodesUrl: codegenDetail.fetchFigmaNodesUrl,
-        genComFromDslSysPrompt: codegenDetail.genComFromDslSysPrompt,
-        component: body.component,
-      },
-    })
+      knowledgeBaseId: kbId ? String(kbId) : undefined,
+      knowledgeBaseName: codegenDetail.knowledgeBaseName,
+      fetchFigmaNodesUrl: codegenDetail.fetchFigmaNodesUrl,
+      dslConfigs: codegenDetail.dslConfigs,
+      component: body.component,
+    },
+  })
 
     return response
   } catch (error) {

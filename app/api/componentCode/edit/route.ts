@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         knowledgeBaseId: kbId ? String(kbId) : undefined,
         knowledgeBaseName: codegenDetail.knowledgeBaseName,
         fetchFigmaNodesUrl: codegenDetail.fetchFigmaNodesUrl,
-        genComFromDslSysPrompt: codegenDetail.genComFromDslSysPrompt,
+        dslConfigs: codegenDetail.dslConfigs,
       },
     })
 

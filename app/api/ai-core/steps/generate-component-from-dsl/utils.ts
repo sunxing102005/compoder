@@ -8,9 +8,9 @@ const IMPORTANT_NOTE = `Important: Write the code directly inside each Component
 `
 
 /**
- * 简化的文件结构，只包含 App.tsx, [ComponentName].tsx, index.less
+ * 默认的文件结构，只包含 App.tsx, [ComponentName].tsx, index.less
  */
-const simplifiedFileStructure = `${IMPORTANT_NOTE}Output component code in XML format as follows:
+const defaultSimplifiedFileStructure = `${IMPORTANT_NOTE}Output component code in XML format as follows:
 <ComponentArtifact name="ComponentName">
   <ComponentFile fileName="App.tsx" isEntryFile="true">
     import { ComponentName } from './ComponentName';
@@ -38,7 +38,7 @@ const simplifiedFileStructure = `${IMPORTANT_NOTE}Output component code in XML f
   </ComponentFile>
 </ComponentArtifact>
 `
-const baseSystemPrompt = `
+const defaultBaseSystemPrompt = `
     ## 目标
         根据组件树 DSL 生成完整的组件代码，生成「React + TypeScript + Less」代码。
     ## 输入
@@ -68,7 +68,18 @@ const baseSystemPrompt = `
 const buildSystemPrompt = (
     context: ComponentDSLWorkflowContext,
 ): string => {
-  const basePrompt = context.query.genComFromDslSysPrompt || baseSystemPrompt;
+  const configs = context.query.dslConfigs
+  const promptFromConfig = configs?.find(
+    cfg => cfg.type === "gen-com-from-dsl-sys-prompt",
+  )?.prompt
+  const fileStructureFromConfig = configs?.find(
+    cfg => cfg.type === "simplified-file-structure",
+  )?.prompt
+
+  const basePrompt =
+    promptFromConfig || defaultBaseSystemPrompt
+  const simplifiedFileStructure =
+    fileStructureFromConfig || defaultSimplifiedFileStructure
   const specificPrompt = `
     # 你是一个高级前端工程师，擅长根据组件树 DSL 生成高质量的组件代码
     # 基本要求

@@ -19,6 +19,16 @@ export interface CodegenRule {
   }
 }
 
+export type CodegenDslConfigType =
+  | "gen-com-from-dsl-sys-prompt"
+  | "simplified-file-structure"
+
+export interface CodegenDslConfig {
+  type: CodegenDslConfigType
+  description?: string
+  prompt: string
+}
+
 export interface Codegen {
   title: string
   description: string
@@ -28,7 +38,7 @@ export interface Codegen {
   codeRendererUrl: string
   rules?: CodegenRule[]
   fetchFigmaNodesUrl?: string
-  genComFromDslSysPrompt?: string
+  dslConfigs?: CodegenDslConfig[]
   pipelineType?: string
   knowledgeBaseId?: string
   knowledgeBaseName?: string

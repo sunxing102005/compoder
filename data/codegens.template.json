@@ -10,8 +10,19 @@
       "model": "gpt-4o",
       "codeRendererUrl": "http://localhost:3002",
       "fetchFigmaNodesUrl": "http://localhost:3100/figma/semantic-nodes",
-      "genComFromDslSysPrompt": "## 目标\\n根据组件树 DSL 生成完整的组件代码，生成「React + TypeScript + Less」代码。\\n## 输入\\n- 组件树 DSL（JSON 格式）\\n## 样式规范\\n- 样式文件必须使用 LESS 语法（index.less）\\n- 可以使用 LESS 的特性，如嵌套、变量、混合等\\n- 使用 BEM 风格 className，例如：'.order-submit-bar', '.order-submit-bar__price'.\\n- 使用 flexible 布局，适配移动端宽度（375 逻辑宽考虑）。\\n- 不使用行内样式\\n## Props 设计\\n- 根据 JSON 中的 props/文案/交互，设计合理的 Props interface。\\n- 不要使用 any。\\n- 对外 props 尽量通用：如 title、desc、price、onSubmit 等。\\n- 为组件属性设置默认值以便预览，默认值与 JSON 数据一致。\\n## 组件写法\\n- 使用 React + TSX 函数组件，使用 FC<Props>。\\n- 仅使用内部基础组件：Font, Button\\n- 所有基础组件从 '@capp/immotors-ui' 导入。\\n- 样式文件命名：index.less，并通过 import './index.less'; 引入。",
-      "pipelineType": "dsl"
+      "pipelineType": "dsl",
+      "dslConfigs": [
+        {
+          "type": "gen-com-from-dsl-sys-prompt",
+          "description": "根据 DSL 生成组件代码的系统提示词",
+          "prompt": "## 目标\\n根据组件树 DSL 生成完整的组件代码，生成「React + TypeScript + Less」代码。\\n## 输入\\n- 组件树 DSL（JSON 格式）\\n## 样式规范\\n- 样式文件必须使用 LESS 语法（index.less）\\n- 可以使用 LESS 的特性，如嵌套、变量、混合等\\n- 使用 BEM 风格 className，例如：'.order-submit-bar', '.order-submit-bar__price'.\\n- 使用 flexible 布局，适配移动端宽度（375 逻辑宽考虑）。\\n- 不使用行内样式\\n## Props 设计\\n- 根据 JSON 中的 props/文案/交互，设计合理的 Props interface。\\n- 不要使用 any。\\n- 对外 props 尽量通用：如 title、desc、price、onSubmit 等。\\n- 为组件属性设置默认值以便预览，默认值与 JSON 数据一致。\\n## 组件写法\\n- 使用 React + TSX 函数组件，使用 FC<Props>。\\n- 仅使用内部基础组件：Font, Button\\n- 所有基础组件从 '@capp/immotors-ui' 导入。\\n- 样式文件命名：index.less，并通过 import './index.less'; 引入。"
+        },
+        {
+          "type": "simplified-file-structure",
+          "description": "DSL 转代码的输出文件结构模板",
+          "prompt": "Important: Write the code directly inside each ComponentFile tag. Do NOT use any code block markers (like ```tsx, ```ts, etc.) inside the XML tags.\\n\\nOutput component code in XML format as follows:\\n<ComponentArtifact name=\\\"ComponentName\\\">\\n  <ComponentFile fileName=\\\"App.tsx\\\" isEntryFile=\\\"true\\\">\\n    import { ComponentName } from './ComponentName';\\n    import './index.less';\\n    \\n    const mockProps = {\\n      // Define mock data here\\n    };\\n    \\n    export default function App() {\\n      return <ComponentName {...mockProps} />;\\n    }\\n  </ComponentFile>\\n  \\n  <ComponentFile fileName=\\\"[ComponentName].tsx\\\">\\n    // Main component implementation\\n    export const ComponentName = () => {\\n      // Component implementation\\n    }\\n  </ComponentFile>\\n\\n  <ComponentFile fileName=\\\"index.less\\\">\\n    // Styles for the component\\n    // Use LESS syntax for styling\\n  </ComponentFile>\\n</ComponentArtifact>"
+        }
+      ]
     },
     {
       "title": "Ant Design Codegen",

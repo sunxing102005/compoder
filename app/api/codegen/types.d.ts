@@ -40,7 +40,7 @@ declare namespace CodegenApi {
       | "knowledgeBaseId"
       | "knowledgeBaseName"
       | "fetchFigmaNodesUrl"
-      | "genComFromDslSysPrompt"
+      | "dslConfigs"
       | "rules"
     >
   }

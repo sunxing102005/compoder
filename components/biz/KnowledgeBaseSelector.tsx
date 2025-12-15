@@ -91,7 +91,7 @@ export function KnowledgeBaseSelector({
         size="sm"
         onClick={() => window.open("/main/knowledge-base", "_blank")}
       >
-        Manage KBs
+        管理知识库
       </Button>
     </div>
   )

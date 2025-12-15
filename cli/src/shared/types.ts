@@ -58,7 +58,11 @@ export interface CodegenDetailResponse {
   codeRendererUrl: string
   pipelineType?: string
   fetchFigmaNodesUrl?: string
-  genComFromDslSysPrompt?: string
+  dslConfigs?: {
+    type: "gen-com-from-dsl-sys-prompt" | "simplified-file-structure"
+    description?: string
+    prompt: string
+  }[]
   rules?: CodegenRule[]
 }
 

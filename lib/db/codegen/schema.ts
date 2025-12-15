@@ -73,11 +73,27 @@ const CodegenSchema = new mongoose.Schema<Codegen>(
       default: [],
       required: false,
     },
-    fetchFigmaNodesUrl: {
-      type: String,
+    dslConfigs: {
+      type: [
+        {
+          type: {
+            type: String,
+            enum: ["gen-com-from-dsl-sys-prompt", "simplified-file-structure"],
+            required: true,
+          },
+          description: {
+            type: String,
+            default: "",
+          },
+          prompt: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
       default: undefined,
     },
-    genComFromDslSysPrompt: {
+    fetchFigmaNodesUrl: {
       type: String,
       default: undefined,
     },

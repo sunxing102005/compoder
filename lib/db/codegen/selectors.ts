@@ -38,7 +38,7 @@ export async function findCodegens(params: CodegenApi.ListRequest) {
 export async function findCodegenById(id: string) {
   const codegen = await CodegenModel.findById(id)
     .select(
-      "_id title description fullStack guides codeRendererUrl rules fetchFigmaNodesUrl genComFromDslSysPrompt pipelineType knowledgeBaseId knowledgeBaseName",
+      "_id title description fullStack guides codeRendererUrl rules dslConfigs fetchFigmaNodesUrl pipelineType knowledgeBaseId knowledgeBaseName",
     )
     .lean<
       Pick<
@@ -49,8 +49,8 @@ export async function findCodegenById(id: string) {
         | "guides"
         | "codeRendererUrl"
         | "rules"
+        | "dslConfigs"
         | "fetchFigmaNodesUrl"
-        | "genComFromDslSysPrompt"
         | "pipelineType"
         | "knowledgeBaseId"
         | "knowledgeBaseName"
@@ -69,7 +69,7 @@ export async function findCodegenById(id: string) {
 export async function findCodegenByName(name: string) {
   const codegen = await CodegenModel.findOne({ title: name })
     .select(
-      "_id title description fullStack guides codeRendererUrl rules fetchFigmaNodesUrl genComFromDslSysPrompt pipelineType knowledgeBaseId knowledgeBaseName",
+      "_id title description fullStack guides codeRendererUrl rules dslConfigs fetchFigmaNodesUrl pipelineType knowledgeBaseId knowledgeBaseName",
     )
     .lean<
       Pick<
@@ -80,8 +80,8 @@ export async function findCodegenByName(name: string) {
         | "guides"
         | "codeRendererUrl"
         | "rules"
+        | "dslConfigs"
         | "fetchFigmaNodesUrl"
-        | "genComFromDslSysPrompt"
       > & {
         _id: string
       }

@@ -14,7 +14,7 @@ type WorkflowQuery = {
   knowledgeBaseId?: string
   knowledgeBaseName?: string
   fetchFigmaNodesUrl?: string
-  genComFromDslSysPrompt?: string
+  dslConfigs?: import("@/lib/db/codegen/types").CodegenDslConfig[]
   component?: {
     id: string
     name: string
