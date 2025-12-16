@@ -3,6 +3,7 @@ import { Document, DocumentChunk, KnowledgeBase } from "@/lib/db/rag"
 import { FileParserService, TextChunkingService, EmbeddingService } from "@/lib/rag/rag-service"
 import { env } from "@/lib/env"
 import { Document as LangchainDocument } from "@langchain/core/documents"
+import { PgVectorStore, type PgVectorChunkInput } from "./pgvector-store"
 
 // 文档处理服务 - 异步处理上传的文档
 export class DocumentProcessingService {
@@ -70,6 +71,8 @@ export class DocumentProcessingService {
       }
 
       // 生成向量并保存chunks
+      const usePgVector = env.VECTOR_STORE_TYPE === "pgvector"
+      const pgVectorChunks: PgVectorChunkInput[] = []
       const chunkPromises = chunks.map(async (chunk, index) => {
         try {
           // 生成embedding（如果配置了OpenAI API key）
@@ -78,16 +81,30 @@ export class DocumentProcessingService {
             embedding = await EmbeddingService.generateEmbedding(chunk.pageContent)
           }
 
+          const metadata = {
+            ...chunk.metadata,
+            chunkIndex: index,
+            fileName: document.fileName,
+            fileType: document.fileType,
+          }
+
+          if (usePgVector) {
+            pgVectorChunks.push({
+              documentId: document._id.toString(),
+              knowledgeBaseId: document.knowledgeBaseId.toString(),
+              content: chunk.pageContent,
+              metadata,
+              embedding,
+              chunkIndex: index,
+            })
+            return null
+          }
+
           const documentChunk = new DocumentChunk({
             documentId: document._id,
             knowledgeBaseId: document.knowledgeBaseId,
             content: chunk.pageContent,
-            metadata: {
-              ...chunk.metadata,
-              chunkIndex: index,
-              fileName: document.fileName,
-              fileType: document.fileType,
-            },
+            metadata,
             embedding,
           })
 
@@ -102,6 +119,10 @@ export class DocumentProcessingService {
       // Wait for all chunks to be processed (with error tolerance)
       try {
         await Promise.all(chunkPromises)
+
+        if (usePgVector && pgVectorChunks.length > 0) {
+          await PgVectorStore.insertChunks(pgVectorChunks)
+        }
       } catch (chunkError) {
         console.error(`Error in chunk processing for document ${documentId}:`, chunkError)
         // Continue anyway, as individual chunk errors are handled above

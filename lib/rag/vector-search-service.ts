@@ -2,6 +2,7 @@ import { connectToDatabase } from "@/lib/db/mongo"
 import { DocumentChunk } from "@/lib/db/rag"
 import { env } from "@/lib/env"
 import { OpenAIEmbeddings } from "@langchain/openai"
+import { PgVectorStore } from "./pgvector-store"
 
 // 向量相似度搜索服务
 export class VectorSearchService {
@@ -51,6 +52,23 @@ export class VectorSearchService {
     queryEmbedding: number[],
     topK: number = 5
   ): Promise<Array<{ content: string; similarity: number }>> {
+    if (env.VECTOR_STORE_TYPE === "pgvector") {
+      const results = await PgVectorStore.search(knowledgeBaseId, queryEmbedding, topK)
+    //   console.log('searchRelevantChunks', results[0]);
+      if (results.length > 0) {
+        return results.map(result => ({
+          content: result.content,
+          similarity: result.similarity,
+        }))
+      }
+
+      const fallback = await PgVectorStore.fetchRecentChunks(knowledgeBaseId, topK)
+      return fallback.map(chunk => ({
+        content: chunk.content,
+        similarity: 0,
+      }))
+    }
+
     await connectToDatabase()
     
     // 如果没有可用的embedding数据，直接降级为简单检索，避免无意义的 embedding 请求

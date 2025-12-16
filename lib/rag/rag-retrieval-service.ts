@@ -2,6 +2,7 @@ import { connectToDatabase } from "@/lib/db/mongo"
 import { DocumentChunk } from "@/lib/db/rag"
 import { env } from "@/lib/env"
 import { VectorSearchService } from "./vector-search-service"
+import { PgVectorStore } from "./pgvector-store"
 
 // RAG检索服务
 export class RAGRetrievalService {
@@ -12,10 +13,16 @@ export class RAGRetrievalService {
     topK: number = 5
   ): Promise<string> {
     try {
-      await connectToDatabase()
-      
+      const usePgVector = env.VECTOR_STORE_TYPE === "pgvector"
+
       // 如果没有配置OpenAI API key，使用降级方案
       if (!env.OPENAI_API_KEY) {
+        if (usePgVector) {
+          const chunks = await PgVectorStore.fetchRecentChunks(knowledgeBaseId, topK)
+          return chunks.map(chunk => chunk.content).join("\n\n---\n\n")
+        }
+
+        await connectToDatabase()
         const chunks = await DocumentChunk.find({ knowledgeBaseId })
           .sort({ createdAt: -1 })
           .limit(topK)
@@ -23,7 +30,7 @@ export class RAGRetrievalService {
         return chunks.map(chunk => chunk.content).join("\n\n---\n\n")
       }
 
-      // 生成查询embedding（内部包含超时保护）
+      // 生成查询embedding
       const queryEmbedding = await VectorSearchService.generateQueryEmbedding(query)
 
       // 执行向量相似度搜索
@@ -41,6 +48,13 @@ export class RAGRetrievalService {
       console.error("Error retrieving relevant content:", error)
       // 降级到简单检索
       try {
+        const usePgVector = env.VECTOR_STORE_TYPE === "pgvector"
+        if (usePgVector) {
+          const chunks = await PgVectorStore.fetchRecentChunks(knowledgeBaseId, topK)
+          return chunks.map(chunk => chunk.content).join("\n\n---\n\n")
+        }
+
+        await connectToDatabase()
         const chunks = await DocumentChunk.find({ knowledgeBaseId })
           .sort({ createdAt: -1 })
           .limit(topK)

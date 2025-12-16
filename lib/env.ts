@@ -16,6 +16,7 @@ export const env = createEnv({
     EMBEDDING_MODEL: z.string().default("text-embedding-v4"),
     VECTOR_STORE_TYPE: z.enum(["mongodb", "pgvector"]).default("mongodb"),
     PGVECTOR_CONNECTION_STRING: z.string().optional(),
+    PGVECTOR_DIMENSION: z.coerce.number().optional(),
     OPENAI_BASE_URL: z.string().optional(),
     RAG_EMBED_TIMEOUT_MS: z.coerce.number().optional(),
   },

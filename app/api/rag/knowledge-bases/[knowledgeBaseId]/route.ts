@@ -2,6 +2,8 @@ import { NextRequest } from "next/server"
 import { connectToDatabase } from "@/lib/db/mongo"
 import { KnowledgeBase, Document, DocumentChunk } from "@/lib/db/rag"
 import { unlink } from "fs/promises"
+import { PgVectorStore } from "@/lib/rag/pgvector-store"
+import { env } from "@/lib/env"
 
 // GET: 获取知识库详情
 export async function GET(
@@ -75,6 +77,9 @@ export async function DELETE(
     
     await Document.deleteMany({ knowledgeBaseId })
     await DocumentChunk.deleteMany({ knowledgeBaseId })
+    if (env.VECTOR_STORE_TYPE === "pgvector") {
+      await PgVectorStore.deleteByKnowledgeBase(knowledgeBaseId)
+    }
     
     // 删除知识库
     const result = await KnowledgeBase.findByIdAndDelete(knowledgeBaseId)

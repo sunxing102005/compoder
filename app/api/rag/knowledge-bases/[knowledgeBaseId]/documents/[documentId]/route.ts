@@ -2,6 +2,8 @@ import { NextRequest } from "next/server"
 import { connectToDatabase } from "@/lib/db/mongo"
 import { Document, DocumentChunk } from "@/lib/db/rag"
 import { unlink } from "fs/promises"
+import { PgVectorStore } from "@/lib/rag/pgvector-store"
+import { env } from "@/lib/env"
 
 // DELETE: 删除指定文档
 export async function DELETE(
@@ -34,6 +36,9 @@ export async function DELETE(
 
     // 删除相关的chunks
     await DocumentChunk.deleteMany({ documentId })
+    if (env.VECTOR_STORE_TYPE === "pgvector") {
+      await PgVectorStore.deleteByDocument(documentId)
+    }
 
     // 删除文档记录
     await Document.findByIdAndDelete(documentId)
