@@ -25,7 +25,7 @@ importers:
         version: 1.3.1
       '@langchain/community':
         specifier: ^1.0.7
-        version: 1.0.7(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.57.0)(deepmerge@4.3.1)(dotenv@16.4.6)(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(zod@3.25.76))(@ibm-cloud/watsonx-ai@1.7.4)(@langchain/core@1.1.4(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(openai@6.10.0(ws@8.18.0)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(cheerio@1.1.2)(ibm-cloud-sdk-core@5.4.5)(ignore@5.3.2)(jsdom@24.1.3)(jsonwebtoken@9.0.3)(lodash@4.17.21)(mammoth@1.11.0)(mongodb@6.11.0(socks@2.8.3))(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(pdf-parse@2.4.5)(playwright@1.57.0)(ws@8.18.0)
+        version: 1.0.7(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.57.0)(deepmerge@4.3.1)(dotenv@16.4.6)(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(zod@3.25.76))(@ibm-cloud/watsonx-ai@1.7.4)(@langchain/core@1.1.4(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(openai@6.10.0(ws@8.18.0)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(cheerio@1.1.2)(ibm-cloud-sdk-core@5.4.5)(ignore@5.3.2)(jsdom@24.1.3)(jsonwebtoken@9.0.3)(lodash@4.17.21)(mammoth@1.11.0)(mongodb@6.11.0(socks@2.8.3))(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(pdf-parse@2.4.5)(pg@8.16.3)(playwright@1.57.0)(ws@8.18.0)
       '@langchain/core':
         specifier: ^1.1.4
         version: 1.1.4(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(openai@6.10.0(ws@8.18.0)(zod@3.25.76))
@@ -98,6 +98,9 @@ importers:
       '@tldraw/tldraw':
         specifier: 2.0.0-alpha.17
         version: 2.0.0-alpha.17(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
+      '@types/pg':
+        specifier: ^8.16.0
+        version: 8.16.0
       '@types/uuid':
         specifier: ^11.0.0
         version: 11.0.0
@@ -158,6 +161,9 @@ importers:
       pdf-parse:
         specifier: ^2.4.5
         version: 2.4.5
+      pg:
+        specifier: ^8.13.1
+        version: 8.16.3
       pgvector:
         specifier: ^0.2.1
         version: 0.2.1
@@ -342,14 +348,11 @@ importers:
       '@babel/standalone':
         specifier: ^7.25.3
         version: 7.26.9
-      '@capp/immotors-ui':
-        specifier: 2.9.1-rc.8
-        version: 2.9.1-rc.8(@capp/immotors-tools@2.9.8)(classnames@2.5.1)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
       antd:
         specifier: ^5.10.0
         version: 5.24.3(date-fns@4.1.0)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
       less:
-        specifier: ^4.2.0
+        specifier: ^4.2.1
         version: 4.2.1
       next:
         specifier: 14.2.6
@@ -373,6 +376,9 @@ importers:
       '@types/babel__standalone':
         specifier: ^7.1.7
         version: 7.1.9
+      '@types/less':
+        specifier: ^3.0.8
+        version: 3.0.8
       '@types/node':
         specifier: ^20
         version: 20.17.9
@@ -507,6 +513,70 @@ importers:
         version: 14.2.30(eslint@8.57.1)(typescript@5.7.2)
       typescript:
         specifier: ^5.2.2
+        version: 5.7.2
+
+  artifacts/im-mobile-renderer:
+    dependencies:
+      '@babel/standalone':
+        specifier: ^7.25.3
+        version: 7.26.9
+      '@capp/immotors-ui':
+        specifier: 2.9.1-rc.8
+        version: 2.9.1-rc.8(@capp/immotors-tools@2.9.8)(classnames@2.5.1)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
+      less:
+        specifier: ^4.2.0
+        version: 4.2.1
+      next:
+        specifier: 14.2.6
+        version: 14.2.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(sass@1.85.1)
+      path-browserify:
+        specifier: ^1.0.1
+        version: 1.0.1
+      react:
+        specifier: ^18
+        version: 18.2.0
+      react-dom:
+        specifier: ^18
+        version: 18.3.1(react@18.2.0)
+      styled-components:
+        specifier: ^6.1.13
+        version: 6.1.15(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
+    devDependencies:
+      '@cloudflare/next-on-pages':
+        specifier: ^1.13.2
+        version: 1.13.9(vercel@41.3.2(@swc/core@1.11.24)(rollup@4.35.0))(wrangler@3.114.0)
+      '@types/babel__standalone':
+        specifier: ^7.1.7
+        version: 7.1.9
+      '@types/node':
+        specifier: ^20
+        version: 20.17.9
+      '@types/path-browserify':
+        specifier: ^1.0.3
+        version: 1.0.3
+      '@types/react':
+        specifier: ^18
+        version: 18.3.12
+      '@types/react-dom':
+        specifier: ^18
+        version: 18.3.1
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      eslint:
+        specifier: ^8
+        version: 8.57.1
+      eslint-config-next:
+        specifier: 14.2.6
+        version: 14.2.6(eslint@8.57.1)(typescript@5.7.2)
+      postcss:
+        specifier: ^8
+        version: 8.4.49
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.15(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.17.9)(typescript@5.7.2))
+      typescript:
+        specifier: ^5
         version: 5.7.2
 
   artifacts/material-ui-renderer:
@@ -7173,6 +7243,9 @@ packages:
   '@types/katex@0.16.7':
     resolution: {integrity: sha512-HMwFiRujE5PjrgwHQ25+bsLJgowjGjm5Z8FVSf0N6PwgJrwxH0QxzHYDcKsTfV3wva0vzrpqMTJS2jXPr5BMEQ==}
 
+  '@types/less@3.0.8':
+    resolution: {integrity: sha512-Gjm4+H9noDJgu5EdT3rUw5MhPBag46fiOy27BefvWkNL8mlZnKnCaVVVTLKj6RYXed9b62CPKnPav9govyQDzA==}
+
   '@types/lodash-es@4.17.12':
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
 
@@ -7200,9 +7273,6 @@ packages:
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
 
-  '@types/node@18.19.67':
-    resolution: {integrity: sha512-wI8uHusga+0ZugNp0Ol/3BqQfEcCCNfojtO6Oou9iVNGPTL6QNSdnUdqq85fRgIorLhLMuPIKpsN98QE9Nh+KQ==}
-
   '@types/node@20.17.9':
     resolution: {integrity: sha512-0JOXkRyLanfGPE2QRCwgxhzlBAvaRdCNMcvbd7jFfpmD4eEXll7LRwy5ymJmyeZqk7Nh7eD2LeUyQ68BbndmXw==}
 
@@ -7217,6 +7287,9 @@ packages:
 
   '@types/path-browserify@1.0.3':
     resolution: {integrity: sha512-ZmHivEbNCBtAfcrFeBCiTjdIc2dey0l7oCGNGpSuRTy8jP6UVND7oUowlvDujBy8r2Hoa8bfFUOCiPWfmtkfxw==}
+
+  '@types/pg@8.16.0':
+    resolution: {integrity: sha512-RmhMd/wD+CF8Dfo+cVIy3RR5cl8CyfXQ0tGgW6XBL8L4LM/UTEbNXYRbLwU6w+CgrKBNbrQWt4FUtTfaU5jSYQ==}
 
   '@types/pretty-hrtime@1.0.3':
     resolution: {integrity: sha512-nj39q0wAIdhwn7DGUyT9irmsKK1tV0bd5WFEhgpqNTMFZ8cE+jieuTphCW0tfdm47S2zVT5mr09B28b1chmQMA==}
@@ -12735,6 +12808,40 @@ packages:
   periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
 
+  pg-cloudflare@1.2.7:
+    resolution: {integrity: sha512-YgCtzMH0ptvZJslLM1ffsY4EuGaU0cx4XSdXLRFae8bPP4dS5xL1tNB3k2o/N64cHJpwU7dxKli/nZ2lUa5fLg==}
+
+  pg-connection-string@2.9.1:
+    resolution: {integrity: sha512-nkc6NpDcvPVpZXxrreI/FOtX3XemeLl8E0qFr6F2Lrm/I8WOnaWNhIPK2Z7OHpw7gh5XJThi6j6ppgNoaT1w4w==}
+
+  pg-int8@1.0.1:
+    resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
+    engines: {node: '>=4.0.0'}
+
+  pg-pool@3.10.1:
+    resolution: {integrity: sha512-Tu8jMlcX+9d8+QVzKIvM/uJtp07PKr82IUOYEphaWcoBhIYkoHpLXN3qO59nAI11ripznDsEzEv8nUxBVWajGg==}
+    peerDependencies:
+      pg: '>=8.0'
+
+  pg-protocol@1.10.3:
+    resolution: {integrity: sha512-6DIBgBQaTKDJyxnXaLiLR8wBpQQcGWuAESkRBX/t6OwA8YsqP+iVSiond2EDy6Y/dsGk8rh/jtax3js5NeV7JQ==}
+
+  pg-types@2.2.0:
+    resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
+    engines: {node: '>=4'}
+
+  pg@8.16.3:
+    resolution: {integrity: sha512-enxc1h0jA/aq5oSDMvqyW3q89ra6XIIDZgCX9vkMrnz5DFTw/Ny3Li2lFQ+pt3L6MCgm/5o2o8HW9hiJji+xvw==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      pg-native: '>=3.0.1'
+    peerDependenciesMeta:
+      pg-native:
+        optional: true
+
+  pgpass@1.0.5:
+    resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
+
   pgvector@0.2.1:
     resolution: {integrity: sha512-nKaQY9wtuiidwLMdVIce1O3kL0d+FxrigCVzsShnoqzOSaWWWOvuctb/sYwlai5cTwwzRSNa+a/NtN2kVZGNJw==}
     engines: {node: '>= 18'}
@@ -12911,6 +13018,22 @@ packages:
   postcss@8.4.49:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
+
+  postgres-array@2.0.0:
+    resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
+    engines: {node: '>=4'}
+
+  postgres-bytea@1.0.0:
+    resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
+    engines: {node: '>=0.10.0'}
+
+  postgres-date@1.0.7:
+    resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
+    engines: {node: '>=0.10.0'}
+
+  postgres-interval@1.2.0:
+    resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
+    engines: {node: '>=0.10.0'}
 
   posthog-js@1.258.2:
     resolution: {integrity: sha512-XBSeiN4HjiYsy3tW5zss8WOJF2JXTQXAYw2wZ+zjqQuzzi7kkLEXjIgsVrBnt5Opwhqn0krZVsb0ZBw34dIiyQ==}
@@ -14156,6 +14279,10 @@ packages:
 
   spawnd@5.0.0:
     resolution: {integrity: sha512-28+AJr82moMVWolQvlAIv3JcYDkjkFTEmfDc503wxrF5l2rQ3dFz6DpbXp3kD4zmgGGldfM4xM4v1sFj/ZaIOA==}
+
+  split2@4.2.0:
+    resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
+    engines: {node: '>= 10.x'}
 
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
@@ -18057,7 +18184,7 @@ snapshots:
       - openai
       - ws
 
-  '@langchain/community@1.0.7(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.57.0)(deepmerge@4.3.1)(dotenv@16.4.6)(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(zod@3.25.76))(@ibm-cloud/watsonx-ai@1.7.4)(@langchain/core@1.1.4(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(openai@6.10.0(ws@8.18.0)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(cheerio@1.1.2)(ibm-cloud-sdk-core@5.4.5)(ignore@5.3.2)(jsdom@24.1.3)(jsonwebtoken@9.0.3)(lodash@4.17.21)(mammoth@1.11.0)(mongodb@6.11.0(socks@2.8.3))(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(pdf-parse@2.4.5)(playwright@1.57.0)(ws@8.18.0)':
+  '@langchain/community@1.0.7(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.57.0)(deepmerge@4.3.1)(dotenv@16.4.6)(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(zod@3.25.76))(@ibm-cloud/watsonx-ai@1.7.4)(@langchain/core@1.1.4(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(openai@6.10.0(ws@8.18.0)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(cheerio@1.1.2)(ibm-cloud-sdk-core@5.4.5)(ignore@5.3.2)(jsdom@24.1.3)(jsonwebtoken@9.0.3)(lodash@4.17.21)(mammoth@1.11.0)(mongodb@6.11.0(socks@2.8.3))(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(pdf-parse@2.4.5)(pg@8.16.3)(playwright@1.57.0)(ws@8.18.0)':
     dependencies:
       '@browserbasehq/stagehand': 1.14.0(@playwright/test@1.57.0)(deepmerge@4.3.1)(dotenv@16.4.6)(openai@6.10.0(ws@8.18.0)(zod@3.25.76))(zod@3.25.76)
       '@ibm-cloud/watsonx-ai': 1.7.4
@@ -18082,6 +18209,7 @@ snapshots:
       mammoth: 1.11.0
       mongodb: 6.11.0(socks@2.8.3)
       pdf-parse: 2.4.5
+      pg: 8.16.3
       playwright: 1.57.0
       ws: 8.18.0
     transitivePeerDependencies:
@@ -20866,7 +20994,7 @@ snapshots:
       '@storybook/node-logger': 7.6.20
       '@storybook/types': 7.6.20
       '@types/find-cache-dir': 3.2.1
-      '@types/node': 18.19.67
+      '@types/node': 18.19.130
       '@types/node-fetch': 2.6.12
       '@types/pretty-hrtime': 1.0.3
       chalk: 4.1.2
@@ -21801,6 +21929,8 @@ snapshots:
 
   '@types/katex@0.16.7': {}
 
+  '@types/less@3.0.8': {}
+
   '@types/lodash-es@4.17.12':
     dependencies:
       '@types/lodash': 4.17.16
@@ -21828,10 +21958,6 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@18.19.67':
-    dependencies:
-      undici-types: 5.26.5
-
   '@types/node@20.17.9':
     dependencies:
       undici-types: 6.19.8
@@ -21845,6 +21971,12 @@ snapshots:
   '@types/parse5@6.0.3': {}
 
   '@types/path-browserify@1.0.3': {}
+
+  '@types/pg@8.16.0':
+    dependencies:
+      '@types/node': 20.17.9
+      pg-protocol: 1.10.3
+      pg-types: 2.2.0
 
   '@types/pretty-hrtime@1.0.3': {}
 
@@ -25012,7 +25144,7 @@ snapshots:
       debug: 4.4.0
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.3.0
@@ -25036,7 +25168,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -25087,7 +25219,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -28783,6 +28915,41 @@ snapshots:
       estree-walker: 3.0.3
       is-reference: 3.0.3
 
+  pg-cloudflare@1.2.7:
+    optional: true
+
+  pg-connection-string@2.9.1: {}
+
+  pg-int8@1.0.1: {}
+
+  pg-pool@3.10.1(pg@8.16.3):
+    dependencies:
+      pg: 8.16.3
+
+  pg-protocol@1.10.3: {}
+
+  pg-types@2.2.0:
+    dependencies:
+      pg-int8: 1.0.1
+      postgres-array: 2.0.0
+      postgres-bytea: 1.0.0
+      postgres-date: 1.0.7
+      postgres-interval: 1.2.0
+
+  pg@8.16.3:
+    dependencies:
+      pg-connection-string: 2.9.1
+      pg-pool: 3.10.1(pg@8.16.3)
+      pg-protocol: 1.10.3
+      pg-types: 2.2.0
+      pgpass: 1.0.5
+    optionalDependencies:
+      pg-cloudflare: 1.2.7
+
+  pgpass@1.0.5:
+    dependencies:
+      split2: 4.2.0
+
   pgvector@0.2.1: {}
 
   picocolors@1.0.0: {}
@@ -28951,6 +29118,16 @@ snapshots:
       nanoid: 3.3.8
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  postgres-array@2.0.0: {}
+
+  postgres-bytea@1.0.0: {}
+
+  postgres-date@1.0.7: {}
+
+  postgres-interval@1.2.0:
+    dependencies:
+      xtend: 4.0.2
 
   posthog-js@1.258.2:
     dependencies:
@@ -30586,6 +30763,8 @@ snapshots:
       wait-port: 0.2.14
     transitivePeerDependencies:
       - supports-color
+
+  split2@4.2.0: {}
 
   sprintf-js@1.0.3: {}
 

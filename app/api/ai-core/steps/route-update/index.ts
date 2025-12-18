@@ -1,4 +1,4 @@
-import { extractFigmaLink } from "../extract-figma-data/utils"
+import { detectDesignSource } from "../extract-figma-data/utils"
 import {
   InitialWorkflowContext,
   FigmaDataWorkflowContext,
@@ -13,32 +13,38 @@ import {
 export const routeUpdate = async (
   context: InitialWorkflowContext,
 ): Promise<FigmaDataWorkflowContext | UpdateRouteWorkflowContext> => {
-  // 检查是否包含 Figma 链接
-  const figmaLink = extractFigmaLink(context.query.prompt)
+  const detection = detectDesignSource(context.query.prompt)
 
-  if (figmaLink) {
-    // 如果有 Figma 链接，提取 Figma 数据
-    context.stream.write("Found Figma link, extracting Figma data \n")
-    
+  // Figma 链接或上传图片时，走提取 -> DSL -> 代码生成
+  if (detection.designSource === "figma" || detection.designSource === "image") {
+    if (detection.designSource === "figma" && detection.figmaLink) {
+      context.stream.write("Found Figma link, extracting Figma data \n")
+    } else {
+      context.stream.write("Image input detected, generating figmaData via model \n")
+    }
+
     const { extractFigmaDataFromPrompt } = await import("../extract-figma-data/utils")
     const figmaData = await extractFigmaDataFromPrompt(context)
+    console.log('figmaData===>', JSON.stringify(figmaData));
+    if (figmaData) {
+      return {
+        ...context,
+        state: {
+          figmaData,
+        },
+      } as FigmaDataWorkflowContext
+    }
 
-    return {
-      ...context,
-      state: {
-        figmaData,
-      },
-    } as FigmaDataWorkflowContext
+    context.stream.write("No figmaData generated, fallback to direct code update \n")
   } else {
-    // 如果没有 Figma 链接，返回标记，让后续步骤跳过 Figma 相关步骤
-    context.stream.write("No Figma link found, will update component based on user input \n")
-    
-    return {
-      ...context,
-      state: {
-        hasFigmaLink: false,
-      },
-    } as InitialWorkflowContext & { state: { hasFigmaLink: false } }
+    // 纯文字，保持旧路径直接更新
+    context.stream.write("Text-only update, skipping figmaData generation \n")
   }
-}
 
+  return {
+    ...context,
+    state: {
+      hasFigmaLink: false,
+    },
+  } as InitialWorkflowContext & { state: { hasFigmaLink: false } }
+}
