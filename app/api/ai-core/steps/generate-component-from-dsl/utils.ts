@@ -1,5 +1,6 @@
 import { streamText, CoreMessage } from "ai"
 import { ComponentDSLWorkflowContext } from "../../type"
+import { throwIfAborted } from "../../utils/errorHandling"
 import { ComponentTreeDSL } from "../generate-component-dsl"
 
 
@@ -130,15 +131,18 @@ export async function generateComponentFromDSL(
 //   console.log("generate-component-from-dsl messages:", messages)
 
   try {
+    throwIfAborted(context.signal)
     const stream = await streamText({
       system: systemPrompt,
       model: context.query.aiModel,
+      abortSignal: context.signal,
       messages,
     })
 
     let accumulatedCode = ""
 
     for await (const part of stream.textStream) {
+      throwIfAborted(context.signal)
       context.stream.write(part)
       accumulatedCode += part
     }

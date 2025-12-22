@@ -1,5 +1,6 @@
 import { streamText, CoreMessage } from "ai"
 import { WorkflowContext } from "../../type"
+import { throwIfAborted } from "../../utils/errorHandling"
 import {
   getPrivateComponentDocs,
   getPrivateDocsDescription,
@@ -211,15 +212,18 @@ export async function generateComponentDesign(
   ]
 //  console.log("design-component messages:", messages[0].content[0]);
   try {
+    throwIfAborted(req.signal)
     const stream = await streamText({
       system: systemPrompt,
       model: req.query.aiModel,
+      abortSignal: req.signal,
       messages,
     })
 
     let accumulatedXml = ""
 
     for await (const part of stream.textStream) {
+      throwIfAborted(req.signal)
       req.stream.write(part)
       accumulatedXml += part
     }

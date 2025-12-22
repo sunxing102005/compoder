@@ -3,6 +3,7 @@ export interface ChatInputProps {
   onChange?: (value: string) => void
   actions?: React.ReactNode[]
   onSubmit: () => void
+  onCancel?: () => void
   loading?: boolean
   handleInputChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
   disabled?: boolean

@@ -4,6 +4,7 @@ import {
 } from "@/lib/db/componentCode/mutations"
 import { GenerateProcessingWorkflowContext } from "../../type"
 import { transformComponentArtifactFromXml } from "@/lib/xml-message-parser/parser"
+import { throwIfAborted } from "../../utils/errorHandling"
 
 // Helper function to merge component files
 function mergeComponentFiles(originalXml: string, newXml: string): string {
@@ -60,6 +61,7 @@ function mergeComponentFiles(originalXml: string, newXml: string): string {
 export const updateComponent = async (
   context: GenerateProcessingWorkflowContext,
 ): Promise<GenerateProcessingWorkflowContext> => {
+  throwIfAborted(context.signal)
   if (!context.query.component) {
     throw new Error("Component not found")
   }
@@ -95,6 +97,7 @@ export const updateComponent = async (
 export const initComponent = async (
   context: GenerateProcessingWorkflowContext,
 ): Promise<GenerateProcessingWorkflowContext> => {
+  throwIfAborted(context.signal)
   if (!context.query.component) {
     throw new Error("Component not found")
   }
@@ -102,6 +105,7 @@ export const initComponent = async (
   if (originalCode) {
     throw new Error("Component already initialized")
   }
+  throwIfAborted(context.signal)
 
   // 从组件树 DSL 或 designTask 中提取名称和描述
   let componentName: string | undefined

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
-import { ArrowUpIcon } from "lucide-react"
+import { ArrowUpIcon, CircleStopIcon } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "@/hooks/use-toast"
 import { ChatInputProps } from "./interface"
@@ -16,6 +16,7 @@ const ChatInput = React.memo(
     onChange,
     actions,
     onSubmit,
+    onCancel,
     loading,
     handleInputChange,
     disabled,
@@ -47,8 +48,14 @@ const ChatInput = React.memo(
       }
     }, [value])
 
+    const isCancelMode = loading && !!onCancel
+
     const handleKeyDown = useCallback(
       (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (loading) {
+          return
+        }
+
         // Skip if IME is composing
         if (event.nativeEvent.isComposing) {
           return
@@ -87,7 +94,7 @@ const ChatInput = React.memo(
           }
         }
       },
-      [value, onChange, onSubmit],
+      [value, onChange, onSubmit, loading],
     )
 
     return (
@@ -189,11 +196,18 @@ const ChatInput = React.memo(
                   variant="default"
                   className={cn(
                     "bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-80",
+                    loading && "animate-pulse",
                     loading &&
-                      "animate-pulse cursor-not-allowed pointer-events-none",
+                      !isCancelMode &&
+                      "cursor-not-allowed pointer-events-none",
                   )}
                   disabled={disabled}
                   onClick={() => {
+                    console.log('isCancelMode==>',isCancelMode)
+                    if (isCancelMode) {
+                      onCancel?.()
+                      return
+                    }
                     if (!value.trim()) {
                       toast({
                         title: "Warning",
@@ -205,7 +219,11 @@ const ChatInput = React.memo(
                     onSubmit()
                   }}
                 >
-                  <ArrowUpIcon className="h-4 w-4 text-white/80" />
+                  {isCancelMode ? (
+                    <CircleStopIcon className="h-4 w-4 text-white/80" />
+                  ) : (
+                    <ArrowUpIcon className="h-4 w-4 text-white/80" />
+                  )}
                 </Button>
               </div>
             </div>

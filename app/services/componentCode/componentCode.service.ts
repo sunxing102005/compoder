@@ -92,6 +92,23 @@ export const editComponentCode = async (
   }
 }
 
+export const cancelComponentCode = async (
+  params: ComponentCodeApi.cancelRequest,
+): Promise<ComponentCodeApi.cancelResponse> => {
+  try {
+    const response = await request("/componentCode/cancel", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    })
+    return await response.json()
+  } catch (error) {
+    throw error
+  }
+}
+
 export const saveComponentCode = async (
   params: ComponentCodeApi.saveRequest,
 ): Promise<any> => {

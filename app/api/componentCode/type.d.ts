@@ -75,6 +75,16 @@ declare namespace ComponentCodeApi {
   // edit response
   export type editResponse = ReadableStream
 
+  export interface cancelRequest {
+    componentId: string
+    type?: "init" | "update"
+  }
+
+  export interface cancelResponse {
+    success: boolean
+    type: "init" | "update"
+  }
+
   // save request
   export interface saveRequest {
     id: string

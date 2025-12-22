@@ -12,6 +12,11 @@ import { connectToDatabase } from "@/lib/db/mongo"
 import { validateSession } from "@/lib/auth/middleware"
 import { LanguageModel } from "ai"
 import { AIProvider } from "@/lib/config/ai-providers"
+import { getComponentCodeDetail } from "@/lib/db/componentCode/selectors"
+import {
+  clearWorkflowTask,
+  registerWorkflowTask,
+} from "../workflow-manager"
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,6 +46,9 @@ export async function POST(request: NextRequest) {
     }
 
     const codegenDetail = await findCodegenById(params.codegenId)
+    const componentDetail = await getComponentCodeDetail(
+      params.component.id,
+    )
 
     const kbId = params.knowledgeBaseId || codegenDetail.knowledgeBaseId
 
@@ -49,11 +57,50 @@ export async function POST(request: NextRequest) {
         ? designGenerateUpdateWorkflow
         : updateComponentWorkflow
 
-    run(workflow, {
-      stream: {
-        write: (chunk: string) => writer.write(encoder.encode(chunk)),
-        close: () => writer.close(),
+    const workflowTask = registerWorkflowTask(params.component.id, {
+      type: "update",
+      codegenId: params.codegenId,
+      versionCountBefore: componentDetail.versions?.length || 0,
+    })
+
+    request.signal.addEventListener(
+      "abort",
+      () => workflowTask.controller.abort(),
+      { once: true },
+    )
+    workflowTask.controller.signal.addEventListener(
+      "abort",
+      () => {
+        try {
+          writer.close()
+        } catch (err) {
+          console.error("Failed to close stream on abort", err)
+        }
       },
+      { once: true },
+    )
+
+    const streamWriter = {
+      write: (chunk: string) => {
+        if (workflowTask.controller.signal.aborted) return
+        try {
+          writer.write(encoder.encode(chunk))
+        } catch (err) {
+          console.error("Failed to write stream chunk", err)
+        }
+      },
+      close: () => {
+        try {
+          writer.close()
+        } catch (err) {
+          console.error("Failed to close stream", err)
+        }
+      },
+    }
+
+    run(workflow, {
+      stream: streamWriter,
+      signal: workflowTask.controller.signal,
       query: {
         prompt: params.prompt,
         aiModel: aiModel as LanguageModel,
@@ -65,7 +112,7 @@ export async function POST(request: NextRequest) {
         fetchFigmaNodesUrl: codegenDetail.fetchFigmaNodesUrl,
         dslConfigs: codegenDetail.dslConfigs,
       },
-    })
+    }).finally(() => clearWorkflowTask(params.component.id))
 
     return new Response(stream.readable)
   } catch (error) {

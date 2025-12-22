@@ -5,6 +5,7 @@ import {
   GenerateProcessingWorkflowContext,
   FigmaDataWorkflowContext,
 } from "../../type"
+import { throwIfAborted } from "../../utils/errorHandling"
 
 export const generateComponent = async (
   context:
@@ -25,13 +26,17 @@ export const generateComponent = async (
 
   const messages = generateComponentMessage(context)
 
+  throwIfAborted(context.signal)
+
   const stream = await streamText({
     system: systemPrompt,
     model: context.query.aiModel,
+    abortSignal: context.signal,
     messages,
   })
 
   for await (const part of stream.textStream) {
+    throwIfAborted(context.signal)
     try {
       process.stdout.write(part || "")
       const chunk = part || ""

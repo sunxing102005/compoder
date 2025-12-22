@@ -4,6 +4,7 @@ import {
   useEditComponentCode,
   useInitComponentCode,
   useSaveComponentCode,
+  useCancelComponentCode,
 } from "../../server-store/mutations"
 import {
   transformComponentArtifactFromXml,
@@ -14,17 +15,20 @@ import { FileNode } from "@/components/biz/CodeIDE"
 import { Prompt } from "@/lib/db/componentCode/types"
 import { useStreamingContent } from "@/hooks/useStreaming"
 import { useLLMSelectorContext } from "@/app/commons/LLMSelectorProvider"
-import { useParams,useSearchParams } from "next/navigation"
+import { useParams, useSearchParams, useRouter } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
 
 export function useComponentDetail() {
   const { componentId, codegenId } = useParams<{
     componentId: string
     codegenId: string
   }>()
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const [activeVersionId, setActiveVersion] = useState("")
   const { provider, model, modelConfig } = useLLMSelectorContext()
   const initRef = useRef(false)
-  const searchParams =  useSearchParams();
+  const searchParams = useSearchParams()
   const knowledgeBaseId = searchParams.get("knowledgeBaseId")
   const {
     data: componentDetail,
@@ -32,11 +36,25 @@ export function useComponentDetail() {
     refetch,
   } = useSuspenseComponentCodeDetail(componentId, codegenId)
 
-  const { isStreaming, readableStream, startStreaming } = useStreamingContent()
+  const cancelFlagRef = useRef(false)
+  const { isStreaming, readableStream, startStreaming, cancelStreaming } =
+    useStreamingContent({
+      onCancel: () => {
+        console.log("useStreamingContent onCancel==>")
+        cancelFlagRef.current = true
+      },
+    })
 
   const editMutation = useEditComponentCode()
   const initMutation = useInitComponentCode()
   const saveMutation = useSaveComponentCode()
+  const cancelMutation = useCancelComponentCode()
+  const isInitializing = useMemo(() => {
+    if (!componentDetail) return false
+    const lastVersion =
+      componentDetail.versions[componentDetail.versions.length - 1]
+    return !lastVersion?.code
+  }, [componentDetail])
 
   const handleInit = useCallback(
     async (lastVersionPrompt: Prompt[]) => {
@@ -66,11 +84,15 @@ export function useComponentDetail() {
         knowledgeBaseId: knowledgeBaseId || undefined,
       }
 
+      cancelFlagRef.current = false
       const result = await startStreaming<string>(async () =>
         //@ts-ignore
         initMutation.mutateAsync(requestParams),
       )
-      refetch()
+      console.log("refetch====>", cancelFlagRef.current)
+      if (!cancelFlagRef.current) {
+        refetch()
+      }
       return result
     },
     [componentDetail, provider, model, knowledgeBaseId],
@@ -108,9 +130,12 @@ export function useComponentDetail() {
         knowledgeBaseId: knowledgeBaseId || undefined,
       }
 
+      cancelFlagRef.current = false
       const result = await startStreaming<string>(async () =>
         editMutation.mutateAsync(requestParams),
       )
+      if (cancelFlagRef.current) return result
+      console.log('handleEdit===>')
       const { data } = await refetch()
 
       if (data?.versions.length) {
@@ -149,6 +174,46 @@ export function useComponentDetail() {
       return false
     }
   }
+
+  const handleCancel = useCallback(async () => {
+    if (!componentDetail) return
+
+    const cancelType = isInitializing ? "init" : "update"
+
+    try {
+      cancelFlagRef.current = true
+      await cancelStreaming(async () => {
+        await cancelMutation.mutateAsync({
+          componentId: componentDetail._id.toString(),
+          type: cancelType,
+        })
+      })
+
+      if (cancelType === "init") {
+        router.push(`/main/codegen/${codegenId}`)
+      } else {
+        const { data } = await refetch()
+        if (data?.versions.length) {
+          const lastVersion = data.versions[data.versions.length - 1]
+          if (lastVersion._id.toString() !== activeVersionId) {
+            setActiveVersion(lastVersion._id.toString())
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to cancel workflow:", error)
+    }
+  }, [
+    cancelMutation,
+    cancelStreaming,
+    activeVersionId,
+    codegenId,
+    componentDetail,
+    isInitializing,
+    refetch,
+    router,
+    queryClient,
+  ])
 
   const artifact = useMemo(() => {
     return transformComponentArtifactFromXml(
@@ -195,6 +260,7 @@ export function useComponentDetail() {
     readableStream,
     handleEdit,
     handleSave,
+    handleCancel,
     artifact,
     codegenId,
     componentId,

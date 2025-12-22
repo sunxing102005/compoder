@@ -3,6 +3,7 @@ import { FigmaDataWorkflowContext } from "../../type"
 import { FigmaSemanticNode } from "../extract-figma-data/utils"
 import basicComponentsDocs from "../../basic-components"
 import { RAGRetrievalService } from "@/lib/rag/rag-retrieval-service"
+import { throwIfAborted } from "../../utils/errorHandling"
 /**
  * 组件树 DSL 类型定义
  * 这里可以根据实际需求定义 DSL 结构
@@ -207,15 +208,18 @@ export async function generateComponentTreeDSL(
 //   console.log("generate-component-dsl messages:", messages)
 
   try {
+    throwIfAborted(context.signal)
     const stream = await streamText({
       system: systemPrompt,
       model: context.query.aiModel,
+      abortSignal: context.signal,
       messages,
     })
 
     let accumulatedResponse = ""
 
     for await (const part of stream.textStream) {
+      throwIfAborted(context.signal)
       context.stream.write(part)
       accumulatedResponse += part
     }

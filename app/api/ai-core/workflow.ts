@@ -62,13 +62,47 @@ export const designGenerateUpdateWorkflow = pipe<
 )
 
 export async function run(workflow: Workflow, context: InitialWorkflowContext) {
+  const { signal } = context
+
+  if (signal?.aborted) {
+    context.stream.close()
+    return {
+      success: false,
+      aborted: true,
+    }
+  }
+
+  const abortPromise =
+    signal &&
+    new Promise((_, reject) =>
+      signal.addEventListener(
+        "abort",
+        () => {
+          const abortError = new Error("Workflow aborted")
+          abortError.name = "AbortError"
+          reject(abortError)
+        },
+        { once: true },
+      ),
+    )
+
   try {
-    const result = await workflow(context)
+    const execution = workflow(context)
+    const result = abortPromise
+      ? await Promise.race([execution, abortPromise])
+      : await execution
     return {
       success: true,
       data: result.state,
     }
   } catch (error: any) {
+    if (error?.name === "AbortError" || signal?.aborted) {
+      context.stream.close()
+      return {
+        success: false,
+        aborted: true,
+      }
+    }
     console.error("Workflow failed:", error?.toString())
     context.stream.write(error.toString())
     context.stream.close()

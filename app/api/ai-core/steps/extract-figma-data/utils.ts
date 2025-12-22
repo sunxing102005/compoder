@@ -2,6 +2,7 @@ import { streamText, type CoreMessage } from "ai"
 import { InitialWorkflowContext } from "../../type"
 import basicComponentsDocs from "../../basic-components"
 import { RAGRetrievalService } from "@/lib/rag/rag-retrieval-service"
+import { throwIfAborted } from "../../utils/errorHandling"
 
 export type SemanticNodeKind =
   | "Root"
@@ -341,6 +342,7 @@ async function generateSemanticNodesFromInput(
   context: InitialWorkflowContext,
   detection: ReturnType<typeof detectDesignSource>
 ): Promise<FigmaSemanticNode> {
+  throwIfAborted(context.signal)
   const componentHints = await buildComponentHints(
     context.query.knowledgeBaseId,
     detection.textPrompt,
@@ -359,11 +361,13 @@ async function generateSemanticNodesFromInput(
   const stream = await streamText({
     system: systemPrompt,
     model: context.query.aiModel,
+    abortSignal: context.signal,
     messages,
   })
 
   let response = ""
   for await (const part of stream.textStream) {
+    throwIfAborted(context.signal)
     context.stream.write(part)
     response += part
   }
@@ -396,6 +400,7 @@ export async function extractFigmaDataFromPrompt(
     context.stream.write(`Extracted fileKey: ${fileKey}, frameId: ${frameId} \n`)
 
     try {
+      throwIfAborted(context.signal)
       const figmaData = await fetchFigmaSemanticNodes(
         fileKey,
         frameId,

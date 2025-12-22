@@ -153,6 +153,48 @@ export async function saveComponentCodeVersion({
   }
 }
 
+export async function rollbackComponentCodeVersion({
+  id,
+  targetVersionCount,
+}: {
+  id: string
+  targetVersionCount?: number
+}) {
+  try {
+    const componentCode = await ComponentCodeModel.findById(id)
+    if (!componentCode) {
+      throw new Error("Component code not found")
+    }
+
+    // 保证至少保留一个版本
+    const safeTargetCount =
+      typeof targetVersionCount === "number"
+        ? Math.max(1, targetVersionCount)
+        : Math.max(1, componentCode.versions.length - 1)
+
+    if (componentCode.versions.length <= safeTargetCount) {
+      return {
+        _id: componentCode._id,
+        ...componentCode.toObject(),
+      }
+    }
+
+    while (componentCode.versions.length > safeTargetCount) {
+      componentCode.versions.pop()
+    }
+
+    await componentCode.save()
+
+    return {
+      _id: componentCode._id,
+      ...componentCode.toObject(),
+    }
+  } catch (error) {
+    console.error("Error rolling back component code version:", error)
+    throw error
+  }
+}
+
 export async function deleteComponentCode({ id }: { id: string }) {
   try {
     const result = await ComponentCodeModel.findByIdAndDelete(id)

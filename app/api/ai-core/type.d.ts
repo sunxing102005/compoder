@@ -45,6 +45,7 @@ export type InitialWorkflowContext = {
     write: (chunk: string) => void
     close: () => void
   }
+  signal?: AbortSignal
   query: WorkflowQuery
   state?: never
 }
@@ -55,6 +56,7 @@ export type FigmaDataWorkflowContext = {
     write: (chunk: string) => void
     close: () => void
   }
+  signal?: AbortSignal
   query: WorkflowQuery
   state: {
     figmaData: FigmaSemanticNode | null
@@ -67,6 +69,7 @@ export type ComponentDSLWorkflowContext = {
     write: (chunk: string) => void
     close: () => void
   }
+  signal?: AbortSignal
   query: WorkflowQuery
   state: {
     figmaData: FigmaSemanticNode | null
@@ -80,6 +83,7 @@ export type DesignProcessingWorkflowContext = {
     write: (chunk: string) => void
     close: () => void
   }
+  signal?: AbortSignal
   query: WorkflowQuery
   state: {
     figmaData?: FigmaSemanticNode | null
@@ -102,6 +106,7 @@ export type GenerateProcessingWorkflowContext = {
     write: (chunk: string) => void
     close: () => void
   }
+  signal?: AbortSignal
   query: WorkflowQuery
   state: {
     figmaData?: FigmaSemanticNode | null

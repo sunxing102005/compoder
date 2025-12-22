@@ -12,6 +12,11 @@ import { connectToDatabase } from "@/lib/db/mongo"
 import { validateSession } from "@/lib/auth/middleware"
 import { LanguageModel } from "ai"
 import { AIProvider } from "@/lib/config/ai-providers"
+import { getComponentCodeDetail } from "@/lib/db/componentCode/selectors"
+import {
+  clearWorkflowTask,
+  registerWorkflowTask,
+} from "../workflow-manager"
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +24,6 @@ export async function POST(request: NextRequest) {
     if (authError) {
       return authError
     }
-
     await connectToDatabase()
 
     const userId = await getUserId()
@@ -30,6 +34,7 @@ export async function POST(request: NextRequest) {
 
     const body = (await request.json()) as ComponentCodeApi.initRequest
     const codegenDetail = await findCodegenById(body.codegenId)
+    const componentDetail = await getComponentCodeDetail(body.component.id)
 
     const aiModel = getAIClient(body.provider as AIProvider, body.model)
 
@@ -42,24 +47,67 @@ export async function POST(request: NextRequest) {
         ? designGenerateInitWorkflow
         : initComponentWorkflow
 
-    run(workflow, {
-      stream: {
-        write: (chunk: string) => writer.write(encoder.encode(chunk)),
-        close: () => writer.close(),
+    const workflowTask = registerWorkflowTask(body.component.id, {
+      type: "init",
+      codegenId: body.codegenId,
+      versionCountBefore: componentDetail.versions?.length || 0,
+    })
+
+    request.signal.addEventListener(
+      "abort",
+      () => {
+        console.log("request.signal.addEventListener===>")
+        workflowTask.controller.abort()
+    },
+      { once: true },
+    )
+    workflowTask.controller.signal.addEventListener(
+      "abort",
+      () => {
+        console.log('workflowTask.controller abort===>')
+        try {
+          writer.close()
+        } catch (err) {
+          console.error("Failed to close stream on abort", err)
+        }
       },
+      { once: true },
+    )
+
+    const streamWriter = {
+      write: (chunk: string) => {
+        if (workflowTask.controller.signal.aborted) return
+        try {
+          writer.write(encoder.encode(chunk))
+        } catch (err) {
+          console.error("Failed to write stream chunk", err)
+        }
+      },
+      close: () => {
+        try {
+          writer.close()
+        } catch (err) {
+          console.error("Failed to close stream", err)
+        }
+      },
+    }
+
+    run(workflow, {
+      stream: streamWriter,
+      signal: workflowTask.controller.signal,
       query: {
         prompt: body.prompt,
         aiModel: aiModel as LanguageModel,
         rules: codegenDetail.rules,
         userId: userId!,
         codegenId: body.codegenId,
-      knowledgeBaseId: kbId ? String(kbId) : undefined,
-      knowledgeBaseName: codegenDetail.knowledgeBaseName,
-      fetchFigmaNodesUrl: codegenDetail.fetchFigmaNodesUrl,
-      dslConfigs: codegenDetail.dslConfigs,
-      component: body.component,
-    },
-  })
+        knowledgeBaseId: kbId ? String(kbId) : undefined,
+        knowledgeBaseName: codegenDetail.knowledgeBaseName,
+        fetchFigmaNodesUrl: codegenDetail.fetchFigmaNodesUrl,
+        dslConfigs: codegenDetail.dslConfigs,
+        component: body.component,
+      },
+    }).finally(() => clearWorkflowTask(body.component.id))
 
     return response
   } catch (error) {

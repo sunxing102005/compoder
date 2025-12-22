@@ -7,6 +7,7 @@ import {
   getSpecialAttentionRules,
 } from "../../utils/codegenRules"
 import basicComponentsDocs from "../../basic-components"
+import { throwIfAborted } from "../../utils/errorHandling"
 const IMPORTANT_NOTE = `Important: Write the code directly inside each ComponentFile tag. Do NOT use any code block markers (like \`\`\`tsx, \`\`\`ts, etc.) inside the XML tags.
 
 When modifying existing component code, only return the <ComponentFile> nodes that need to be modified, without returning unchanged files. However, for each modified <ComponentFile> node, you must include the complete code content of that file, even if only a small portion was modified. This ensures the system correctly replaces the entire file content and maintains code integrity.
@@ -140,15 +141,18 @@ export async function updateComponentCodeFromInput(
 //   console.log("update-component-code messages:", messages)
 
   try {
+    throwIfAborted(context.signal)
     const stream = await streamText({
       system: systemPrompt,
       model: context.query.aiModel,
+      abortSignal: context.signal,
       messages,
     })
 
     let accumulatedCode = ""
 
     for await (const part of stream.textStream) {
+      throwIfAborted(context.signal)
       context.stream.write(part)
       accumulatedCode += part
     }

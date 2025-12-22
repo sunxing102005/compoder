@@ -5,6 +5,7 @@ import {
   saveComponentCode,
   deleteComponentCode,
   initComponentCode,
+  cancelComponentCode,
 } from "@/app/services/componentCode/componentCode.service"
 import { ComponentCodeApi } from "@/app/api/componentCode/type"
 import { useToast } from "@/hooks/use-toast"
@@ -63,6 +64,25 @@ export const useEditComponentCode = () => {
     ComponentCodeApi.editRequest
   >({
     mutationFn: params => editComponentCode(params),
+  })
+}
+
+export const useCancelComponentCode = () => {
+  const { toast } = useToast()
+  return useMutation<
+    ComponentCodeApi.cancelResponse,
+    Error,
+    ComponentCodeApi.cancelRequest
+  >({
+    mutationFn: params => cancelComponentCode(params),
+    onError: error => {
+      console.error("cancelComponentCode error", error)
+      toast({
+        title: "Error",
+        description: error.message || "Failed to cancel generation",
+        variant: "destructive",
+      })
+    },
   })
 }
 

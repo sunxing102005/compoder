@@ -31,6 +31,7 @@ export const ComponentDetailContainer = () => {
     readableStream,
     handleEdit,
     handleSave,
+    handleCancel,
     artifact,
     codegenId,
     componentId,
@@ -156,6 +157,7 @@ export const ComponentDetailContainer = () => {
         value={chatInput}
         onChange={setChatInput}
         onSubmit={handleChatSubmit}
+        onCancel={handleCancel}
         actions={[
           supportVision && (
             <TooltipProvider key="draw-image">

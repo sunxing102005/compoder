@@ -25,20 +25,42 @@ export function useStreamingContent(options: UseStreamingContentOptions = {}) {
     setReadableStream(undefined)
   }, [])
 
-  const cancelStreaming = async () => {
-    if (readableStream) {
+  const cancelStreaming = useCallback(
+    async (onCancel?: () => Promise<void> | void) => {
+      let cancelError: unknown
+      if (readableStream) {
+        try {
+
+          if (!readableStream.locked) {
+            const reader = readableStream.getReader()
+            await reader.cancel("Stream canceled by user")
+          }
+
+        } catch (error) {
+          console.error("Error canceling stream reader:", error)
+          cancelError = error
+        }
+      }
+
       try {
-        const reader = readableStream.getReader()
-        await reader.cancel("Stream canceled by user")
+        if (onCancel) {
+          await onCancel()
+        }
         if (options.onCancel) {
           options.onCancel()
         }
-        resetState()
       } catch (error) {
-        console.error("Error canceling stream:", error)
+        console.error("Error during cancel callback:", error)
+        cancelError = cancelError || error
+      } finally {
+        resetState()
+        if (cancelError) {
+          throw cancelError
+        }
       }
-    }
-  }
+    },
+    [options, readableStream, resetState],
+  )
 
   const startStreaming = async <T>(
     asyncFn: () => Promise<StreamResponse> | StreamResponse,
