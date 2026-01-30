@@ -5,3 +5,9 @@ npm-debug.log
 README.md
 .next
 .git
+dist/*
+!dist/static/
+dist/static/js
+dist/static/css
+dist/static/font
+dist/static/img

@@ -12,10 +12,11 @@
 # next.js
 /.next/
 /out/
-
+/release/
+/dist/
 # production
 /build
-
+/compoder-pg/
 # misc
 .DS_Store
 *.pem
@@ -52,3 +53,5 @@ artifacts/arco-design-web-vue-render/public/npm
 # render npm packages
 artifacts/**/public/npm/*
 !artifacts/**/public/npm/.gitkeep
+
+/.vscode
