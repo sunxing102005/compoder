@@ -33,7 +33,7 @@ export const conditionalDesignGenerateUpdate = async (
 
   // 无 Figma 链接，直接根据文字需求修改现有代码
   const updatedFromInput = await updateComponentCode(
-    context as InitialWorkflowContext,
+    context as unknown as InitialWorkflowContext,
   )
   const merged = await updateComponent(
     updatedFromInput as GenerateProcessingWorkflowContext,

@@ -3,58 +3,18 @@ import { InitialWorkflowContext } from "../../type"
 import basicComponentsDocs from "../../basic-components"
 import { RAGRetrievalService } from "@/lib/rag/rag-retrieval-service"
 import { throwIfAborted } from "../../utils/errorHandling"
+import {
+  buildSemanticNodesFromFigma,
+  type FigmaSemanticNode,
+} from "./figma-semantic"
 
-export type SemanticNodeKind =
-  | "Root"
-  | "Frame"
-  | "Group"
-  | "ButtonLike"
-  | "TextBlock"
-  | "CardLike"
-  | "List"
-  | "ListItem"
-  | "IconText"
-  | "Image"
-  | "RawContainer"
-  | "Raw"
-
-export interface LayoutInfo {
-  x?: number
-  y?: number
-  width?: number
-  height?: number
-}
-
-export interface StyleInfo {
-  fontSize?: number
-  fontWeight?: number
-  textColor?: string
-  bgColor?: string
-  radius?: number
-  hasShadow?: boolean
-  borderColor?: string
-  borderWidth?: number
-  borderTopLeftRadius?: number
-  borderTopRightRadius?: number
-  borderBottomRightRadius?: number
-  borderBottomLeftRadius?: number
-}
-
-export interface SemanticNode {
-  id: string
-  name?: string
-  kind: SemanticNodeKind
-  suggestedComponent?: string
-  text?: string
-  layout?: LayoutInfo
-  style?: StyleInfo
-  meta?: Record<string, any>
-  children?: SemanticNode[]
-}
-
-export interface FigmaSemanticNode {
-  root: SemanticNode
-}
+export type {
+  FigmaSemanticNode,
+  LayoutInfo,
+  SemanticNode,
+  SemanticNodeKind,
+  StyleInfo,
+} from "./figma-semantic"
 
 export type DesignSource = "figma" | "image" | "text"
 
@@ -294,7 +254,7 @@ function parseFigmaLink(link: string): { fileKey: string; frameId: string } | nu
 }
 
 /**
- * 调用 Figma semantic-nodes 接口获取数据
+ * 直接调用 Figma API 获取并构造语义节点
  */
 async function fetchFigmaSemanticNodes(
   fileKey: string,
@@ -302,33 +262,8 @@ async function fetchFigmaSemanticNodes(
   fetchFigmaNodesUrl?: string,
 ): Promise<FigmaSemanticNode | null> {
   try {
-    const baseUrl =
-      fetchFigmaNodesUrl ||
-      "http://localhost:3100/figma/semantic-nodes"
-    //   console.log("baseUrl===>", baseUrl);
-    const response = await fetch(
-      `${baseUrl}?fileKey=${encodeURIComponent(fileKey)}&frameId=${encodeURIComponent(frameId)}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    )
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch Figma data: ${response.status} ${response.statusText}`,
-      )
-    }
-
-    const data = await response.json()
-    console.log("data", data.toString().slice(0,300));
-    // 兼容接口返回 root 或直接返回节点的情况
-    if ((data as any)?.root) {
-      return data as FigmaSemanticNode
-    }
-    return { root: data as SemanticNode }
+    void fetchFigmaNodesUrl
+    return await buildSemanticNodesFromFigma(fileKey, frameId)
   } catch (error) {
     console.error("Failed to fetch Figma semantic nodes:", error)
     throw error

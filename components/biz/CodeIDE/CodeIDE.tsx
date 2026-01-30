@@ -183,7 +183,7 @@ function CodeIDEContent({
       isSaving,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unsavedFiles.size, isSaving])
+  }, [unsavedFiles.size, isSaving, files])
 
   const handleEditorWillMount = (monaco: Monaco) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
