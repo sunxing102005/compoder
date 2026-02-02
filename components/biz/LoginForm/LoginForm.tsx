@@ -63,7 +63,7 @@ const LoginForm = ({
               />
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Compoder
+              Tusk
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground/90">
               Generate component code in seconds.
@@ -98,20 +98,6 @@ const LoginForm = ({
             </Button>
           </form>
 
-          <div className="text-center space-y-3 sm:space-y-4 text-xs sm:text-sm text-muted-foreground/80">
-            <p className="font-medium">
-              Join Compoder,
-              <span className="text-primary">
-                {" "}
-                it&apos;s free & open source!
-              </span>
-            </p>
-            <p className="leading-relaxed">
-              Your Stack, Your UI - AI-Powered Component Code Generator for
-              Every
-              <span className="text-primary"> Frontend Engineer</span>
-            </p>
-          </div>
 
           <div className="grid grid-cols-5 gap-2 sm:gap-4 px-2 sm:px-4 pt-4 place-items-center">
             {techIcons.map((tech, index) => (

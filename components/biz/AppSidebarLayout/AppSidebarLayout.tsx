@@ -40,7 +40,7 @@ export function AppSidebarLayout({
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <div className="truncate font-semibold inline-block bg-gradient-to-r from-[#3B82F6] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent">
-                      Compoder
+                      Tusk
                     </div>
                     <div className="truncate text-primary/50 text-[11px]">
                       组件代码生成器
