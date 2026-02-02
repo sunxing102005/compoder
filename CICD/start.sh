@@ -2,7 +2,7 @@
 set -e
 
 APP_ENV="${K8S_ENV:-production}"
-PORT="3000"
+PORT="3200"
 
 echo "env11 is ${APP_ENV}, port is ${PORT}"
 

@@ -1,26 +1,28 @@
 # --------- Dependencies Installation Stage -----------
-FROM node:18.17-alpine AS deps
+FROM docker.1ms.run/library/node:18.17-bullseye-slim AS deps
 WORKDIR /app
 
 ARG proxy
 
-RUN apk add --no-cache libc6-compat && npm install -g pnpm@9.8.0
-# If proxy is provided, set npm mirror
-RUN [ -z "$proxy" ] || pnpm config set registry https://registry.npmmirror.com/
+# Install pnpm with optional npm registry override
+RUN if [ -n "$proxy" ]; then npm install -g pnpm@9.8.0 --registry=http://10.184.152.63:8081/repository/npm-group/; else npm install -g pnpm@9.8.0; fi
+# If proxy is provided, set pnpm mirror
+RUN [ -z "$proxy" ] || pnpm config set registry http://10.184.152.63:8081/repository/npm-group/
 
 # Copy dependency manifests
 COPY package.json ./
 
 # Install dependencies
-RUN pnpm install
+RUN pnpm install --registry=http://10.184.152.63:8081/repository/npm-group/
 
 # --------- Build Stage -----------
-FROM node:18.17-alpine AS builder
+FROM docker.1ms.run/library/node:18.17-bullseye-slim AS builder
 WORKDIR /app
 
 ARG proxy
 
-RUN apk add --no-cache libc6-compat && npm install -g pnpm@9.8.0
+# Install pnpm with optional npm registry override
+RUN if [ -n "$proxy" ]; then npm install -g pnpm@9.8.0 --registry=http://10.184.152.63:8081/repository/npm-group/; else npm install -g pnpm@9.8.0; fi
 
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
@@ -30,39 +32,36 @@ COPY . .
 RUN pnpm build
 
 # --------- Runtime Stage -----------
-FROM node:18.17-alpine AS runner
+FROM docker.1ms.run/library/node:18.17-bullseye-slim AS runner
 WORKDIR /app
 
 ARG proxy
 
-# Create non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-RUN apk add --no-cache curl ca-certificates \
-  && update-ca-certificates
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates curl \
+  && rm -rf /var/lib/apt/lists/*
 
 # Copy build artifacts
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # Copy package.json for version information
 COPY --from=builder /app/package.json ./package.json
 
 # Set production environment
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV PORT 3000
+ENV PORT 3012
 
-EXPOSE 3000
+EXPOSE 3012
 
-# Switch to non-root user
-USER nextjs
+# Switch to prebuilt non-root user after root-only steps
+USER node
 
 # Health check to validate application is running properly
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD curl -f http://localhost:3000/ || exit 1
+  CMD curl -f http://localhost:3012/health || exit 1
 
 # Start application
 CMD ["node", "server.js"]

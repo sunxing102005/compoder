@@ -11,14 +11,14 @@ cp -r ./lib ./release
 cp -r ./data ./release
 #cp -p ./server.js ./release
 #cp -p ./sentry.sh ./release
-rsync -a ./dist/ ./release/dist/
+cp -a ./dist/ ./release/dist/
 rm -rf ./release/dist/cache
 mkdir -p ./release/dist/standalone/dist
 # Ensure standalone server can resolve distDir static assets
-rsync -a ./dist/static/ ./release/dist/standalone/dist/static/
+cp -a ./dist/static/ ./release/dist/standalone/dist/static/
 cp -r ./public ./release
 # Standalone server serves /public from its own cwd
 mkdir -p ./release/dist/standalone/public
-rsync -a ./public/ ./release/dist/standalone/public/
+cp -a ./public/ ./release/dist/standalone/public/
 # cp -rf ./server ./release
 # cp -rf ./node_modules ./release

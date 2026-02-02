@@ -10,27 +10,85 @@ services:
     networks:
       - compoder
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=username
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_USERNAME=sunx
+      - MONGO_INITDB_ROOT_PASSWORD=1234
     volumes:
       - ./database/data:/data/db
-  # compoder:
-  #   container_name: compoder
-  #   image: compoder:latest
-  #   ports:
-  #     - 3000:3000
-  #   networks:
-  #     - compoder
-  #   depends_on:
-  #     - compoder-mongo
-  #   restart: always
-  #   environment:
-  #     # DB
-  #     - MONGODB_URI=mongodb://username:password@compoder-mongo:27017/compoder?authSource=admin
-
-  #     # github sso
-  #     - NEXTAUTH_SECRET=PEQER9wxJzUNzJ851Z/jUWoLt9ioQqzqU/J/f0lg=
-  #     - GITHUB_ID=44a551a3154fcc25d6
-  #     - GITHUB_SECRET=72571b95571c28fd7e12b080fc5a56a6de11
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  compoder:
+    container_name: compoder
+    image: compoder:latest
+    ports:
+      - 3200:3200
+    networks:
+      - compoder
+    depends_on:
+      compoder-mongo:
+        condition: service_healthy
+      im-mobile-renderer:
+        condition: service_healthy
+      antd-renderer:
+        condition: service_healthy
+      compoder-pg:
+        condition: service_healthy
+    restart: always
+    env_file:
+      - .env
+    environment:
+      # DB
+      - MONGODB_URI=mongodb://sunx:1234@compoder-mongo:27017/compoder?authSource=admin
+      - PGVECTOR_CONNECTION_STRING=postgresql://sunx:1234@compoder-pg:5432/postgres
+      - PORT=3200
+  im-mobile-renderer:
+    image: im-mobile-renderer:latest
+    ports:
+      - "3002:3002"
+    networks:
+      - compoder
+    environment:
+      - HOSTNAME=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3002/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+  antd-renderer:
+    image: antd-renderer:latest
+    ports:
+      - "3012:3012"
+    networks:
+      - compoder
+    environment:
+      - HOSTNAME=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3012/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+  compoder-pg:
+    image: pgvector/pgvector:0.8.0-pg15 # docker hub
+    # image: registry.cn-hangzhou.aliyuncs.com/fastgpt/pgvector:v0.8.0-pg15 # 阿里云
+    container_name: compoder-pg
+    restart: always
+    # ports: # 生产环境建议不要暴露
+    #   - 5432:5432
+    networks:
+      - compoder
+    environment:
+      # 这里的配置只有首次运行生效。修改后，重启镜像是不会生效的。需要把持久化数据删除再重启，才有效果
+      - POSTGRES_USER=sunx
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./compoder-pg/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres', '-d', 'aiproxy']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 networks:
   compoder:

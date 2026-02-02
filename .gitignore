@@ -54,4 +54,4 @@ artifacts/arco-design-web-vue-render/public/npm
 artifacts/**/public/npm/*
 !artifacts/**/public/npm/.gitkeep
 
-/.vscode
+.vscode
