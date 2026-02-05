@@ -8,6 +8,7 @@ export const customRequire = (moduleName: string) => {
     "@ant-design/pro-components": require("@ant-design/pro-components"),
     "@ant-design/use-emotion-css": require("@ant-design/use-emotion-css"),
     "styled-components": require("styled-components"),
+    "moment": require("moment")
   }
 
   if (modules[moduleName]) {
