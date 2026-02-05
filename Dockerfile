@@ -95,7 +95,7 @@
 # CMD ["sh", "./start.sh"]
 
 
-FROM --platform=linux/arm64 docker.1ms.run/library/node:23
+FROM docker.1ms.run/library/node:23
 WORKDIR /app
 # Copy manifests from repo root to guarantee pnpm can run even if release lacks them
 COPY package.json pnpm-lock.yaml ./

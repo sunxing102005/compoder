@@ -4,10 +4,10 @@
   "private": true,
   "description": "AI-Powered Component Code Generator For Every Frontend Engineer",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3200",
     "build": "next build",
-    "remove-dist": "sh ./sh/remove_dist.sh",
-    "copy-to-release": "sh ./sh/copy_to_release.sh",
+    "remove-dist": "sh ./script/remove-dist.sh",
+    "copy-to-release": "sh ./script/copy-to-release.sh",
     "release": "npm-run-all remove-dist build copy-to-release release:deps",
     "release:deps": "sh ./CICD/install_release_deps.sh",
     "start": "next start",
@@ -22,7 +22,8 @@
     "postinstall": "playwright install chromium",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "format:staged": "prettier --write"
+    "format:staged": "prettier --write",
+    "build:deploy": "sh ./script/prepare-compoder-build.sh"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.1.17",

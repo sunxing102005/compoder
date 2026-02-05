@@ -5,15 +5,15 @@ WORKDIR /app
 ARG proxy
 
 # Install pnpm with optional npm registry override
-RUN if [ -n "$proxy" ]; then npm install -g pnpm@9.8.0 --registry=http://10.184.152.63:8081/repository/npm-group/; else npm install -g pnpm@9.8.0; fi
+RUN if [ -n "$proxy" ]; then npm install -g pnpm@9.8.0; else npm install -g pnpm@9.8.0; fi
 # If proxy is provided, set pnpm mirror
-RUN [ -z "$proxy" ] || pnpm config set registry http://10.184.152.63:8081/repository/npm-group/
+RUN [ -z "$proxy" ]
 
 # Copy dependency manifests
 COPY package.json ./
 
 # Install dependencies
-RUN pnpm install --registry=http://10.184.152.63:8081/repository/npm-group/
+RUN pnpm install
 
 # --------- Build Stage -----------
 FROM docker.1ms.run/library/node:18.17-bullseye-slim AS builder
@@ -22,7 +22,7 @@ WORKDIR /app
 ARG proxy
 
 # Install pnpm with optional npm registry override
-RUN if [ -n "$proxy" ]; then npm install -g pnpm@9.8.0 --registry=http://10.184.152.63:8081/repository/npm-group/; else npm install -g pnpm@9.8.0; fi
+RUN if [ -n "$proxy" ]; then npm install -g pnpm@9.8.0 ; else npm install -g pnpm@9.8.0; fi
 
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
