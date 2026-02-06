@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 import type { CompoderThinkingLoadingProps } from "./interface"
 
 export function CompoderThinkingLoading({
-  text = "Compoder is thinking...",
+  text = "Tusk is thinking...",
   className,
 }: CompoderThinkingLoadingProps) {
   return (

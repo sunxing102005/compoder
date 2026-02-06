@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-DEST_DIR="$ROOT_DIR/../compoder-build"
+DEST_DIR="$ROOT_DIR/../tusk-build"
 
 IM_MOBILE_SRC="$ROOT_DIR/artifacts/im-mobile-renderer"
 IM_MOBILE_DEST="$DEST_DIR/artifacts/im-mobile-renderer"
@@ -11,6 +11,7 @@ ANTD_SRC="$ROOT_DIR/artifacts/antd-renderer"
 ANTD_DEST="$DEST_DIR/artifacts/antd-renderer"
 
 mkdir -p "$DEST_DIR"
+mkdir -p "$DEST_DIR/artifacts"
 
 export DEST_DIR
 export IM_MOBILE_DEST
@@ -40,6 +41,8 @@ cp -f "$ROOT_DIR/Dockerfile" "$DEST_DIR/Dockerfile"
 cp -f "$ROOT_DIR/docker-compose.yml" "$DEST_DIR/docker-compose.yml"
 cp -f "$ROOT_DIR/package.json" "$DEST_DIR/package.json"
 cp -f "$ROOT_DIR/pnpm-lock.yaml" "$DEST_DIR/pnpm-lock.yaml"
+cp -a "$ROOT_DIR/script/" "$DEST_DIR/script/"
+cp -a "$ROOT_DIR/CICD/" "$DEST_DIR/CICD/"
 echo "Replacing localhost in docker-compose.yml..."
 python3 - <<'PY'
 from pathlib import Path
