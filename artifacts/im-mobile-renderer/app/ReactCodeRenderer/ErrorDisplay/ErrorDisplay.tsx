@@ -124,14 +124,15 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ errorMessage }) => {
         <span style={{ fontWeight: "bold" }}>EXECUTE AUTO FIX</span>
         &quot; in the bottom right corner to fix the issue. If you think this is
         a bug, please{" "}
-        <a
-          href="https://github.com/IamLiuLv/compoder/issues"
+        {/* bug反馈 */}
+        {/* <a
+          href="https://github.com/IamLiuLv/tusk/issues"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: "#666", textDecoration: "underline" }}
         >
-          report it in Compoder&apos;s GitHub issues
-        </a>
+          report it in Tusk&apos;s GitHub issues
+        </a> */}
       </div>
     </div>
   )
