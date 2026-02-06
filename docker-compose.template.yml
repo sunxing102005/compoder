@@ -1,14 +1,14 @@
 # 非 host 版本, 不使用本机代理
 version: "3.3"
 services:
-  compoder-mongo:
+  tusk-mongo:
     image: mongo:5.0.18
-    container_name: compoder-mongo
+    container_name: tusk-mongo
     restart: always
     ports:
       - 27017:27017
     networks:
-      - compoder
+      - tusk
     environment:
       - MONGO_INITDB_ROOT_USERNAME=sunx
       - MONGO_INITDB_ROOT_PASSWORD=1234
@@ -19,36 +19,36 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
-  compoder:
-    container_name: compoder
-    image: compoder:latest
+  tusk:
+    container_name: tusk
+    image: tusk:latest
     ports:
       - 3200:3200
     networks:
-      - compoder
+      - tusk
     depends_on:
-      compoder-mongo:
+      tusk-mongo:
         condition: service_healthy
       im-mobile-renderer:
         condition: service_healthy
       antd-renderer:
         condition: service_healthy
-      compoder-pg:
+      tusk-pg:
         condition: service_healthy
     restart: always
     env_file:
       - .env
     environment:
       # DB
-      - MONGODB_URI=mongodb://sunx:1234@compoder-mongo:27017/compoder?authSource=admin
-      - PGVECTOR_CONNECTION_STRING=postgresql://sunx:1234@compoder-pg:5432/postgres
+      - MONGODB_URI=mongodb://sunx:1234@tusk-mongo:27017/tusk?authSource=admin
+      - PGVECTOR_CONNECTION_STRING=postgresql://sunx:1234@tusk-pg:5432/postgres
       - PORT=3200
   im-mobile-renderer:
     image: im-mobile-renderer:latest
     ports:
       - "3002:3002"
     networks:
-      - compoder
+      - tusk
     environment:
       - HOSTNAME=0.0.0.0
     healthcheck:
@@ -61,7 +61,7 @@ services:
     ports:
       - "3012:3012"
     networks:
-      - compoder
+      - tusk
     environment:
       - HOSTNAME=0.0.0.0
     healthcheck:
@@ -69,26 +69,26 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
-  compoder-pg:
+  tusk-pg:
     image: pgvector/pgvector:0.8.0-pg15 # docker hub
     # image: registry.cn-hangzhou.aliyuncs.com/fastgpt/pgvector:v0.8.0-pg15 # 阿里云
-    container_name: compoder-pg
+    container_name: tusk-pg
     restart: always
     # ports: # 生产环境建议不要暴露
     #   - 5432:5432
     networks:
-      - compoder
+      - tusk
     environment:
       # 这里的配置只有首次运行生效。修改后，重启镜像是不会生效的。需要把持久化数据删除再重启，才有效果
       - POSTGRES_USER=sunx
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=postgres
     volumes:
-      - ./compoder-pg/data:/var/lib/postgresql/data
+      - ./tusk-pg/data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD', 'pg_isready', '-U', 'postgres', '-d', 'aiproxy']
       interval: 5s
       timeout: 5s
       retries: 10
 networks:
-  compoder:
+  tusk:

@@ -189,7 +189,7 @@ const StreamingExample = () => {
 
 > generate a component for a login page
 
-🚀 compoder running...
+🚀 tusk running...
 `)
   const fullCode = `
 import { Button } from "@/components/ui/button"

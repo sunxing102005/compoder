@@ -1,5 +1,5 @@
 {
-  "name": "compoder",
+  "name": "tusk",
   "version": "0.1.0",
   "private": true,
   "description": "AI-Powered Component Code Generator For Every Frontend Engineer",
@@ -17,13 +17,14 @@
     "test": "jest",
     "build-storybook": "storybook build",
     "migrate-codegen": "tsx lib/db/codegen/migrate.ts",
-    "build:docker": "docker build -t compoder:latest .",
+    "build:docker": "docker build -t tusk:latest .",
     "build:artifacts-docker": "bash script/build-artifacts-docker.sh",
+    "build:target-images": "bash script/build-target-images.sh",
     "postinstall": "playwright install chromium",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:staged": "prettier --write",
-    "build:deploy": "sh ./script/prepare-compoder-build.sh"
+    "build:deploy": "sh ./script/prepare-tusk-build.sh"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.1.17",

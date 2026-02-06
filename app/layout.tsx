@@ -18,7 +18,7 @@ const geistMono = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Compoder",
+  title: "Tusk",
   description: "AI-powered Component Code Generator",
   icons: [{ type: "image/svg+xml", url: "/logo.svg" }],
 }

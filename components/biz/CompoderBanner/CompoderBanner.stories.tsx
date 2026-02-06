@@ -37,12 +37,12 @@ type Story = StoryObj<typeof CompoderBanner>
 
 export const Default: Story = {
   args: {
-    title: "Compoder",
+    title: "Tusk",
     subtitle: "AI-Powered Component Code Generator",
     description:
       "Your Stack, Your UI - AI-Powered Component Code Generator for Every Frontend Engineer",
     showGithubStar: true,
-    githubUrl: "https://github.com/yourusername/compoder",
+    githubUrl: "https://github.com/yourusername/tusk",
     tagline: "Generate component code in seconds",
     cyberpunkLevel: "medium",
     matrixDensity: 50,
@@ -105,11 +105,11 @@ export const LowCyberpunk: Story = {
 export const CustomContent: Story = {
   args: {
     ...Default.args,
-    title: "Compoder Pro",
+    title: "Tusk Pro",
     subtitle: "Enterprise Component Generator",
     description:
       "Build professional UI components with AI assistance for teams and organizations",
     tagline: "Scale your design system effortlessly",
-    actionButtonLabel: "Try Compoder Pro",
+    actionButtonLabel: "Try Tusk Pro",
   },
 }

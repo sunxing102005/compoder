@@ -1,13 +1,13 @@
 {
   "apps": [{
-    "name": "immotors-compoder",
+    "name": "immotors-tusk",
     "script": "dist/standalone/server.js",
     "cwd": ".",
     "watch": false,
     "instances": 1,
     "exec_mode": "fork",
     "node_args": "--max_old_space_size=4096 --max_semi_space_size=64",
-    "pid_file": "./pm2/immotors-compoder.pid",
+    "pid_file": "./pm2/immotors-tusk.pid",
     "log_type": "json",
     "out_file": "./pm2/pm2-out.log",
     "error_file": "./pm2/pm2-error.log",

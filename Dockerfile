@@ -74,7 +74,7 @@
 
 # FROM docker.1ms.run/library/node:18.17-alpine AS builder
 # # MAINTAINER "lapp_sx"
-# # LABEL description="IMCompoder"
+# # LABEL description="IMTusk"
 # WORKDIR /app
 
 # RUN apk add --no-cache libc6-compat \
