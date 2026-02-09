@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const kbId = params.knowledgeBaseId || codegenDetail.knowledgeBaseId
 
     const workflow =
-      (codegenDetail as any).pipelineType === "figma-design"
+      (codegenDetail as any).pipelineType === "public-component-based"
         ? designGenerateUpdateWorkflow
         : updateComponentWorkflow
 

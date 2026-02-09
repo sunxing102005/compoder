@@ -35,7 +35,7 @@
       "model": "gpt-4o",
       "codeRendererUrl": "http://localhost:3012",
       "fetchFigmaNodesUrl": "http://localhost:3100/figma/semantic-nodes",
-      "pipelineType": "figma-design",
+      "pipelineType": "public-component-based",
       "rules": [
         {
           "type": "public-components",

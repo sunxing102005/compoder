@@ -73,7 +73,7 @@ export default function CodegenDetailPage({
   const supportVision = modelConfig?.features.includes("vision")
   const initComponentMutation = useCreateComponentCode()
   const deleteComponentMutation = useDeleteComponentCode()
-  const hideKnowledgeBase = codegenDetail?.pipelineType === "figma-design"
+  const hideKnowledgeBase = codegenDetail?.pipelineType === "public-component-based"
 
   const shouldShowList = useShowOnFirstData(componentCodeData?.items)
   useEffect(() => {

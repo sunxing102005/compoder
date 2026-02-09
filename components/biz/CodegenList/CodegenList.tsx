@@ -55,7 +55,7 @@ function CodegenCard({
   const [kbId, setKbId] = useState(item.knowledgeBaseId || "")
   const [kbName, setKbName] = useState(item.knowledgeBaseName || "")
   const updateKb = useUpdateCodegenKnowledgeBase()
-  const hideKnowledgeBase = item.pipelineType === "figma-design"
+  const hideKnowledgeBase = item.pipelineType === "public-component-based"
 
   const handleSave = async () => {
     if (!kbId) {
