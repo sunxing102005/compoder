@@ -35,7 +35,7 @@ export function AppSidebarLayout({
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
                 <a href="#">
-                  <div className="flex aspect-square size-10 items-center justify-start rounded-lg text-sidebar-primary-foreground">
+                  <div className="flex aspect-square size-8 items-center justify-start rounded-lg text-sidebar-primary-foreground">
                     <Logo />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
